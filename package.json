@@ -1,0 +1,56 @@
+{
+  "name": "legal-document-platform",
+  "version": "1.0.0",
+  "description": "A modern platform for legal document management, analysis, comparison, and e-signatures",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "mocha test/**/*.js --timeout 10000",
+    "test:coverage": "nyc mocha test/**/*.js --timeout 10000",
+    "migrate": "sequelize-cli db:migrate",
+    "seed": "sequelize-cli db:seed:all",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write 'src/**/*.{js,json,md}'"
+  },
+  "keywords": [
+    "legal",
+    "document",
+    "management",
+    "analysis",
+    "e-signature"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.31.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
+    "eslint": "^8.40.0",
+    "eslint-config-prettier": "^8.8.0",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.22",
+    "nyc": "^15.1.0",
+    "prettier": "^2.8.8",
+    "sequelize-cli": "^6.6.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

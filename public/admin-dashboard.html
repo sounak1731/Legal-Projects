@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Legal Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --success-color: #27ae60;
+      --warning-color: #f39c12;
+      --danger-color: #c0392b;
+      --info-color: #2980b9;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --border-color: #e0e0e0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-color);
+      background-color: #f5f7fa;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      color: white !important;
+    }
+    
+    .navbar .badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 0.6rem;
+    }
+    
+    .sidebar {
+      background-color: white;
+      height: calc(100vh - 56px);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .sidebar .nav-link {
+      color: var(--text-color);
+      border-radius: 0;
+      padding: 0.8rem 1rem;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar .nav-link:hover {
+      background-color: rgba(52, 152, 219, 0.1);
+      border-left-color: rgba(52, 152, 219, 0.5);
+    }
+    
+    .sidebar .nav-link.active {
+      background-color: rgba(52, 152, 219, 0.15);
+      color: var(--secondary-color);
+      border-left-color: var(--secondary-color);
+      font-weight: 500;
+    }
+    
+    .sidebar .nav-link i {
+      width: 24px;
+      text-align: center;
+      margin-right: 8px;
+    }
+    
+    .sidebar-heading {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #95a5a6;
+      padding: 1rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stat-card {
+      padding: 1.5rem;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card .stat-icon {
+      font-size: 4rem;
+      position: absolute;
+      bottom: -10px;
+      right: 10px;
+      opacity: 0.2;
+    }
+    
+    .stat-card .stat-label {
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-card .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0.2rem 0;
+    }
+    
+    .stat-card .stat-change {
+      font-size: 0.9rem;
+    }
+    
+    .table th {
+      font-weight: 600;
+      border-top: none;
+    }
+    
+    .bg-primary {
+      background-color: var(--primary-color) !important;
+    }
+    
+    .bg-secondary {
+      background-color: var(--secondary-color) !important;
+    }
+    
+    .bg-success {
+      background-color: var(--success-color) !important;
+    }
+    
+    .bg-warning {
+      background-color: var(--warning-color) !important;
+    }
+    
+    .bg-danger {
+      background-color: var(--danger-color) !important;
+    }
+    
+    .bg-info {
+      background-color: var(--info-color) !important;
+    }
+    
+    .content-area {
+      padding: 1.5rem;
+    }
+    
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--light-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      color: var(--primary-color);
+      margin-right: 1rem;
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .status-active {
+      background-color: var(--success-color);
+    }
+    
+    .status-inactive {
+      background-color: var(--danger-color);
+    }
+    
+    .status-pending {
+      background-color: var(--warning-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-scale-balanced"></i> Legal Platform
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard.html">
+              <i class="fas fa-tachometer-alt me-1"></i> User Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="admin-dashboard.html">
+              <i class="fas fa-user-shield me-1"></i> Admin Dashboard
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item position-relative me-3">
+            <a class="nav-link" href="#" id="notificationsBtn">
+              <i class="fas fa-bell"></i>
+              <span class="badge rounded-pill bg-danger">3</span>
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle"></i> Admin User
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i> Profile</a></li>
+              <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-2 d-none d-md-block p-0 sidebar">
+        <div class="sidebar-heading">Administration</div>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="#" data-section="overview">
+              <i class="fas fa-home"></i> Overview
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="users">
+              <i class="fas fa-users"></i> User Management
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="documents">
+              <i class="fas fa-file-alt"></i> Documents
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="signatures">
+              <i class="fas fa-signature"></i> E-Signatures
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="analysis">
+              <i class="fas fa-chart-bar"></i> Analysis Reports
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="system">
+              <i class="fas fa-server"></i> System Settings
+            </a>
+          </li>
+        </ul>
+        
+        <div class="sidebar-heading">Monitoring</div>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="logs">
+              <i class="fas fa-list-alt"></i> Activity Logs
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="performance">
+              <i class="fas fa-tachometer-alt"></i> Performance
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Main Content Area -->
+      <div class="col-md-10 content-area">
+        <!-- Overview Section -->
+        <section id="overview-section" class="mb-5">
+          <h2 class="mb-4">Admin Dashboard Overview</h2>
+          
+          <!-- Stats Row -->
+          <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+              <div class="stat-card bg-primary text-white">
+                <div class="stat-label">Active Users</div>
+                <div class="stat-value" id="activeUsersCount">0</div>
+                <div class="stat-change">
+                  <i class="fas fa-arrow-up"></i> +5% this week
+                </div>
+                <i class="fas fa-users stat-icon"></i>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="stat-card bg-info text-white">
+                <div class="stat-label">Documents</div>
+                <div class="stat-value" id="documentsCount">0</div>
+                <div class="stat-change">
+                  <i class="fas fa-arrow-up"></i> +12% this month
+                </div>
+                <i class="fas fa-file-alt stat-icon"></i>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="stat-card bg-success text-white">
+                <div class="stat-label">Completed Signatures</div>
+                <div class="stat-value" id="signaturesCount">0</div>
+                <div class="stat-change">
+                  <i class="fas fa-arrow-up"></i> +8% this month
+                </div>
+                <i class="fas fa-signature stat-icon"></i>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="stat-card bg-warning text-white">
+                <div class="stat-label">Analysis Reports</div>
+                <div class="stat-value" id="analysisCount">0</div>
+                <div class="stat-change">
+                  <i class="fas fa-arrow-up"></i> +15% this month
+                </div>
+                <i class="fas fa-chart-bar stat-icon"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recent Activity -->
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Recent Activity</h5>
+              <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Activity</th>
+                      <th>Resource</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="activityTable">
+                    <tr>
+                      <td class="text-center" colspan="4">Loading activity data...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- System Status -->
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">System Status</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>Server Resources</h6>
+                  <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between">
+                      <span>CPU Usage</span>
+                      <span id="cpuUsage">35%</span>
+                    </label>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 35%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between">
+                      <span>Memory Usage</span>
+                      <span id="memoryUsage">62%</span>
+                    </label>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: 62%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between">
+                      <span>Disk Space</span>
+                      <span id="diskUsage">28%</span>
+                    </label>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 28%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h6>API Performance</h6>
+                  <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between">
+                      <span>Response Time</span>
+                      <span id="apiResponseTime">215ms avg</span>
+                    </label>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 80%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between">
+                      <span>Requests per Minute</span>
+                      <span id="requestsPerMinute">42 req/min</span>
+                    </label>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-info" role="progressbar" style="width: 45%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between">
+                      <span>Success Rate</span>
+                      <span id="apiSuccessRate">99.8%</span>
+                    </label>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 99.8%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- User Management Section -->
+        <section id="users-section" class="mb-5" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>User Management</h2>
+            <button class="btn btn-primary" id="addUserBtn">
+              <i class="fas fa-plus me-2"></i> Add New User
+            </button>
+          </div>
+          
+          <!-- User Search and Filters -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search users..." id="userSearchInput">
+                    <button class="btn btn-outline-secondary" type="button" id="userSearchBtn">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <select class="form-select" id="userRoleFilter">
+                    <option value="">All Roles</option>
+                    <option value="admin">Admin</option>
+                    <option value="legal_analyst">Legal Analyst</option>
+                    <option value="manager">Manager</option>
+                    <option value="user">Regular User</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <select class="form-select" id="userStatusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Users Table -->
+          <div class="card">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Last Login</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="usersTable">
+                    <tr>
+                      <td class="text-center" colspan="6">Loading user data...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer">
+              <nav aria-label="User pagination">
+                <ul class="pagination justify-content-center mb-0">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                  </li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Documents Section -->
+        <section id="documents-section" class="mb-5" style="display: none;">
+          <h2 class="mb-4">Document Management</h2>
+          <!-- Documents content here -->
+        </section>
+        
+        <!-- Signatures Section -->
+        <section id="signatures-section" class="mb-5" style="display: none;">
+          <h2 class="mb-4">E-Signature Management</h2>
+          <!-- Signatures content here -->
+        </section>
+        
+        <!-- Analysis Section -->
+        <section id="analysis-section" class="mb-5" style="display: none;">
+          <h2 class="mb-4">Analysis Reports</h2>
+          <!-- Analysis content here -->
+        </section>
+        
+        <!-- System Settings Section -->
+        <section id="system-section" class="mb-5" style="display: none;">
+          <h2 class="mb-4">System Settings</h2>
+          <!-- System settings content here -->
+        </section>
+        
+        <!-- Logs Section -->
+        <section id="logs-section" class="mb-5" style="display: none;">
+          <h2 class="mb-4">Activity Logs</h2>
+          <!-- Logs content here -->
+        </section>
+        
+        <!-- Performance Section -->
+        <section id="performance-section" class="mb-5" style="display: none;">
+          <h2 class="mb-4">Performance Monitoring</h2>
+          <!-- Performance content here -->
+        </section>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add User Modal -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addUserForm">
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" required>
+            </div>
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastName" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="role" class="form-label">Role</label>
+              <select class="form-select" id="role" required>
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="legal_analyst">Legal Analyst</option>
+                <option value="manager">Manager</option>
+                <option value="user">Regular User</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmPassword" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveUserBtn">Add User</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container"></div>
+
+  <!-- Libraries and Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html> 

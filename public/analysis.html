@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Analysis Results - Project Zero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --transition-base: all 0.2s ease;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            color: var(--text-dark);
+            background-color: var(--background-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: white;
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            transition: var(--transition-base);
+        }
+
+        .navbar-brand:hover {
+            color: var(--primary-dark);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            transition: var(--transition-base);
+            border-radius: 0.5rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+            background-color: var(--background-light);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 3rem 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            font-size: 1.125rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .analysis-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .document-icon {
+            width: 64px;
+            height: 64px;
+            background-color: var(--background-light);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .document-details {
+            flex: 1;
+        }
+
+        .document-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .document-meta {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .document-meta span {
+            display: flex;
+            align-items: center;
+        }
+
+        .document-meta i {
+            margin-right: 0.5rem;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .analysis-tab-content {
+            margin-top: 2rem;
+        }
+
+        .analysis-nav {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .analysis-nav-link {
+            color: var(--text-light);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+            transition: var(--transition-base);
+            cursor: pointer;
+        }
+
+        .analysis-nav-link:hover, .analysis-nav-link.active {
+            color: var(--primary-color);
+            background-color: var(--background-light);
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .insight-card {
+            background-color: var(--background-light);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition-base);
+        }
+
+        .insight-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+        }
+
+        .insight-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .insight-card h3 i {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+
+        .insight-card p {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .risk-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-high {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .risk-medium {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
+        .risk-low {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .entity-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .entity-item {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+        }
+
+        .entity-item i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .clause-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .clause-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: white;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .clause-item:hover {
+            box-shadow: var(--shadow-sm);
+        }
+
+        .clause-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .clause-title i {
+            transition: transform 0.2s ease;
+        }
+
+        .clause-title.collapsed i {
+            transform: rotate(180deg);
+        }
+
+        .clause-content {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .footer p {
+            color: var(--text-light);
+            margin: 0;
+            text-align: center;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: var(--transition-base);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--background-light);
+            border-color: var(--text-light);
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .loading-spinner.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .analysis-container {
+                padding: 1.5rem;
+            }
+
+            .document-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .document-icon {
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+
+            .document-actions {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-file-contract me-2"></i>
+                Project Zero
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/legal-dd">Document Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/e-sign">E-Signature</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/document-editor">Document Editor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user-guide">User Guide</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Document Analysis</h1>
+                <p>Review the AI-powered analysis of your document to gain valuable insights and identify potential risks.</p>
+            </div>
+
+            <!-- Analysis Container -->
+            <div class="analysis-container">
+                <!-- Document Info -->
+                <div class="document-info">
+                    <div class="document-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="document-details">
+                        <h2 class="document-name" id="documentName">Loading document...</h2>
+                        <div class="document-meta">
+                            <span><i class="fas fa-calendar-alt"></i> <span id="uploadDate">-</span></span>
+                            <span><i class="fas fa-file-alt"></i> <span id="fileSize">-</span></span>
+                            <span><i class="fas fa-clock"></i> <span id="analysisTime">Analysis in progress</span></span>
+                        </div>
+                    </div>
+                    <div class="document-actions">
+                        <a href="/document-editor" class="btn btn-primary action-btn">
+                            <i class="fas fa-edit"></i> Open in Editor
+                        </a>
+                        <button id="downloadBtn" class="btn btn-outline action-btn">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner show">
+                    <div class="spinner"></div>
+                    <p>Analyzing your document...</p>
+                    <p class="text-muted">This may take a few moments depending on the document size and complexity.</p>
+                </div>
+
+                <!-- Analysis Navigation -->
+                <div id="analysisContent" class="analysis-content" style="display: none;">
+                    <div class="analysis-nav">
+                        <div class="analysis-nav-link active" data-tab="summary">Summary</div>
+                        <div class="analysis-nav-link" data-tab="risks">Risk Assessment</div>
+                        <div class="analysis-nav-link" data-tab="clauses">Key Clauses</div>
+                        <div class="analysis-nav-link" data-tab="entities">Entity Recognition</div>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="analysis-tab-content">
+                        <!-- Summary Tab -->
+                        <div id="summary" class="tab-pane active">
+                            <div class="insight-card">
+                                <h3><i class="fas fa-lightbulb"></i> Document Overview</h3>
+                                <p id="documentSummary">This appears to be a legal document of type contract that outlines an agreement between multiple parties. The document contains various clauses covering terms, conditions, obligations, and legal protections.</p>
+                            </div>
+                            <div class="insight-card">
+                                <h3><i class="fas fa-star"></i> Key Highlights</h3>
+                                <ul id="highlightsList">
+                                    <li>Contract between Party A and Party B dated January 15, 2025</li>
+                                    <li>Agreement term of 36 months with automatic renewal clause</li>
+                                    <li>Payment terms specify 30-day invoice period</li>
+                                    <li>Termination requires 60-day written notice</li>
+                                </ul>
+                            </div>
+                            <div class="insight-card">
+                                <h3><i class="fas fa-exclamation-triangle"></i> Potential Concerns</h3>
+                                <p>The analysis has identified several items that may require attention:</p>
+                                <div class="risk-tags" id="concernTags">
+                                    <span class="risk-tag risk-high">Liability clause limitations</span>
+                                    <span class="risk-tag risk-medium">Payment terms ambiguity</span>
+                                    <span class="risk-tag risk-low">Notification requirements</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risks Tab -->
+                        <div id="risks" class="tab-pane">
+                            <div class="insight-card">
+                                <h3><i class="fas fa-exclamation-circle"></i> High Risk Items</h3>
+                                <p>These issues may have significant legal or business implications and should be addressed promptly:</p>
+                                <ul id="highRiskList">
+                                    <li><strong>Liability Limitations (Section 8.2):</strong> The liability cap is set unusually low compared to industry standards and may not provide adequate protection.</li>
+                                </ul>
+                            </div>
+                            <div class="insight-card">
+                                <h3><i class="fas fa-exclamation"></i> Medium Risk Items</h3>
+                                <p>These issues present moderate concerns that should be reviewed:</p>
+                                <ul id="mediumRiskList">
+                                    <li><strong>Payment Terms (Section 4.1):</strong> Payment terms lack specificity about acceptable payment methods and late payment consequences.</li>
+                                    <li><strong>Intellectual Property (Section 6.3):</strong> IP rights transfer language is ambiguous and may lead to disputes.</li>
+                                </ul>
+                            </div>
+                            <div class="insight-card">
+                                <h3><i class="fas fa-info-circle"></i> Low Risk Items</h3>
+                                <p>These issues present minor concerns that should be considered:</p>
+                                <ul id="lowRiskList">
+                                    <li><strong>Notification Requirements (Section 12.1):</strong> The notification methods are limited to traditional mail, which may cause delays.</li>
+                                    <li><strong>Force Majeure (Section 14.2):</strong> The clause uses standard language but lacks specificity for industry-specific disruptions.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Clauses Tab -->
+                        <div id="clauses" class="tab-pane">
+                            <ul class="clause-list" id="clauseList">
+                                <li class="clause-item">
+                                    <div class="clause-title">
+                                        <span>Section 1: Definitions</span>
+                                        <i class="fas fa-chevron-up"></i>
+                                    </div>
+                                    <div class="clause-content">
+                                        <p>This section defines key terms used throughout the document, including "Agreement," "Effective Date," "Services," "Deliverables," and other relevant terminology.</p>
+                                        <p>The definitions appear to be standard with no unusual or concerning language.</p>
+                                    </div>
+                                </li>
+                                <li class="clause-item">
+                                    <div class="clause-title">
+                                        <span>Section 4: Payment Terms</span>
+                                        <i class="fas fa-chevron-up"></i>
+                                    </div>
+                                    <div class="clause-content">
+                                        <p>This section outlines the payment schedule, invoicing procedures, and payment methods.</p>
+                                        <p><strong>4.1:</strong> Payments due within 30 days of invoice date.</p>
+                                        <p><strong>4.2:</strong> Invoices to be submitted monthly for services rendered.</p>
+                                        <p><strong>Note:</strong> The payment terms lack specificity about acceptable payment methods and consequences of late payment.</p>
+                                    </div>
+                                </li>
+                                <li class="clause-item">
+                                    <div class="clause-title">
+                                        <span>Section 8: Liability</span>
+                                        <i class="fas fa-chevron-up"></i>
+                                    </div>
+                                    <div class="clause-content">
+                                        <p>This section addresses limitations of liability, indemnification, and insurance requirements.</p>
+                                        <p><strong>8.1:</strong> Standard indemnification language for third-party claims.</p>
+                                        <p><strong>8.2:</strong> Liability cap set at the lesser of $50,000 or fees paid in the previous 12 months.</p>
+                                        <p><strong>Warning:</strong> The liability cap is substantially lower than typical for this type of agreement.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Entities Tab -->
+                        <div id="entities" class="tab-pane">
+                            <div class="insight-card">
+                                <h3><i class="fas fa-building"></i> Organizations</h3>
+                                <div class="entity-list" id="orgList">
+                                    <div class="entity-item"><i class="fas fa-building"></i> Acme Corporation</div>
+                                    <div class="entity-item"><i class="fas fa-building"></i> XYZ Enterprises</div>
+                                    <div class="entity-item"><i class="fas fa-building"></i> Global Insurance Ltd.</div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <h3><i class="fas fa-user"></i> People</h3>
+                                <div class="entity-list" id="peopleList">
+                                    <div class="entity-item"><i class="fas fa-user"></i> John Smith</div>
+                                    <div class="entity-item"><i class="fas fa-user"></i> Jane Doe</div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <h3><i class="fas fa-calendar"></i> Dates</h3>
+                                <div class="entity-list" id="datesList">
+                                    <div class="entity-item"><i class="fas fa-calendar"></i> January 15, 2025</div>
+                                    <div class="entity-item"><i class="fas fa-calendar"></i> March 1, 2025</div>
+                                    <div class="entity-item"><i class="fas fa-calendar"></i> December 31, 2027</div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <h3><i class="fas fa-money-bill-wave"></i> Monetary Values</h3>
+                                <div class="entity-list" id="moneyList">
+                                    <div class="entity-item"><i class="fas fa-money-bill-wave"></i> $50,000</div>
+                                    <div class="entity-item"><i class="fas fa-money-bill-wave"></i> $10,000 monthly</div>
+                                    <div class="entity-item"><i class="fas fa-money-bill-wave"></i> $250 per hour</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Project Zero. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get document ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const documentId = urlParams.get('id');
+            
+            // Simulate loading document data (replace with actual API call)
+            setTimeout(() => {
+                // Hide loading spinner and show content
+                document.getElementById('loadingSpinner').classList.remove('show');
+                document.getElementById('analysisContent').style.display = 'block';
+                
+                // Set document info (replace with actual document data)
+                const fileName = localStorage.getItem('lastUploadedFileName') || 'Document.pdf';
+                document.getElementById('documentName').innerText = fileName;
+                document.getElementById('uploadDate').innerText = new Date().toLocaleDateString();
+                document.getElementById('fileSize').innerText = localStorage.getItem('lastUploadedFileSize') || '1.2 MB';
+                document.getElementById('analysisTime').innerText = 'Analysis complete';
+                
+                // Set download link
+                document.getElementById('downloadBtn').addEventListener('click', function() {
+                    const docId = localStorage.getItem('lastUploadedDocId');
+                    if (docId) {
+                        window.location.href = `/api/documents/${docId}/download`;
+                    } else {
+                        alert('Download link not available');
+                    }
+                });
+            }, 2000);
+            
+            // Tab switching
+            const tabLinks = document.querySelectorAll('.analysis-nav-link');
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabLinks.forEach(tab => tab.classList.remove('active'));
+                    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Clause item toggle
+            const clauseTitles = document.querySelectorAll('.clause-title');
+            clauseTitles.forEach(title => {
+                title.addEventListener('click', function() {
+                    this.classList.toggle('collapsed');
+                    const content = this.nextElementSibling;
+                    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+            
+            // Handle errors
+            window.addEventListener('error', function(e) {
+                console.error('Error:', e.message);
+            });
+            
+            // Store uploaded file info from query params
+            if (urlParams.has('fileName')) {
+                localStorage.setItem('lastUploadedFileName', urlParams.get('fileName'));
+            }
+            if (urlParams.has('fileSize')) {
+                localStorage.setItem('lastUploadedFileSize', urlParams.get('fileSize'));
+            }
+            if (urlParams.has('id')) {
+                localStorage.setItem('lastUploadedDocId', urlParams.get('id'));
+            }
+        });
+    </script>
+</body>
+</html> 

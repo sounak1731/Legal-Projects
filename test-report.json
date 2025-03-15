@@ -1,0 +1,187 @@
+{
+  "passed": 26,
+  "failed": 2,
+  "warnings": 2,
+  "tests": [
+    {
+      "name": "Node.js Version",
+      "status": "PASS",
+      "message": "Using Node.js v22.14.0",
+      "details": null
+    },
+    {
+      "name": "Package.json Check",
+      "status": "PASS",
+      "message": "Successfully parsed package.json",
+      "details": null
+    },
+    {
+      "name": "Required Dependencies",
+      "status": "PASS",
+      "message": "All required dependencies present",
+      "details": null
+    },
+    {
+      "name": "Environment Variables",
+      "status": "PASS",
+      "message": "All required environment variables present",
+      "details": null
+    },
+    {
+      "name": "Directory Structure",
+      "status": "PASS",
+      "message": "All required directories present",
+      "details": null
+    },
+    {
+      "name": "Required Files",
+      "status": "PASS",
+      "message": "All required files present",
+      "details": null
+    },
+    {
+      "name": "Database Connection",
+      "status": "FAIL",
+      "message": "Failed to connect to the database: ",
+      "details": null
+    },
+    {
+      "name": "PostgreSQL Check",
+      "status": "WARN",
+      "message": "Could not verify if PostgreSQL is running",
+      "details": null
+    },
+    {
+      "name": "Port Availability",
+      "status": "FAIL",
+      "message": "Port 3002 is already in use",
+      "details": null
+    },
+    {
+      "name": "Required Models",
+      "status": "PASS",
+      "message": "All required models present",
+      "details": null
+    },
+    {
+      "name": "Model: analysisResult.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Model: auditLog.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Model: document.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Model: signature.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Model: signatureRequest.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Model: user.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Model Syntax",
+      "status": "PASS",
+      "message": "All models passed syntax check",
+      "details": null
+    },
+    {
+      "name": "Required Routes",
+      "status": "PASS",
+      "message": "All required routes present",
+      "details": null
+    },
+    {
+      "name": "Route: admin.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route: analysis.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route: auth.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route: chat.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route: documents.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route: esign.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route: pages.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route: signatures.js",
+      "status": "WARN",
+      "message": "Skipping syntax check (SQLite not available)",
+      "details": null
+    },
+    {
+      "name": "Route: users.js",
+      "status": "PASS",
+      "message": "No syntax errors",
+      "details": null
+    },
+    {
+      "name": "Route Syntax",
+      "status": "PASS",
+      "message": "All routes passed syntax check",
+      "details": null
+    },
+    {
+      "name": "Required HTML Files",
+      "status": "PASS",
+      "message": "All required HTML files present",
+      "details": null
+    },
+    {
+      "name": "Required JS Files",
+      "status": "PASS",
+      "message": "All required JS files present",
+      "details": null
+    }
+  ]
+}

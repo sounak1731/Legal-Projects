@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - Project Zero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --transition-base: all 0.2s ease;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            color: var(--text-dark);
+            background-color: var(--background-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: white;
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            transition: var(--transition-base);
+        }
+
+        .navbar-brand:hover {
+            color: var(--primary-dark);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            transition: var(--transition-base);
+            border-radius: 0.5rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+            background-color: var(--background-light);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 3rem 0 6rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            font-size: 1.125rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .toc {
+            position: sticky;
+            top: 100px;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .toc h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toc-link {
+            display: block;
+            padding: 0.5rem 0;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: var(--transition-base);
+            border-left: 2px solid transparent;
+            padding-left: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .toc-link:hover, .toc-link.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .toc-link-sub {
+            padding-left: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .guide-section {
+            padding: 2.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .guide-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--primary-color);
+        }
+
+        .guide-section h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .guide-section p {
+            margin-bottom: 1.25rem;
+        }
+
+        .guide-section ul, .guide-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.25rem;
+        }
+
+        .guide-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .guide-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .steps-list {
+            counter-reset: steps;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .steps-list li {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .steps-list li::before {
+            counter-increment: steps;
+            content: "Step " counter(steps);
+            position: absolute;
+            left: 0;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .feature-highlight {
+            background-color: var(--background-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .feature-highlight h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary-color);
+        }
+
+        .tutorial-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: var(--transition-base);
+            text-decoration: none;
+            color: var(--text-dark);
+            display: block;
+            height: 100%;
+        }
+
+        .tutorial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            color: var(--text-dark);
+        }
+
+        .tutorial-card-img {
+            height: 160px;
+            background-color: var(--background-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+
+        .tutorial-card-body {
+            padding: 1.5rem;
+        }
+
+        .tutorial-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        code {
+            background-color: var(--background-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+        }
+
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .footer p {
+            color: var(--text-light);
+            margin: 0;
+            text-align: center;
+        }
+
+        @media (max-width: 992px) {
+            .toc {
+                position: relative;
+                top: 0;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-file-contract me-2"></i>
+                Project Zero
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/legal-dd">Document Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/e-sign">E-Signature</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/document-editor">Document Editor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/user-guide">User Guide</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>User Guide</h1>
+                <p>Learn how to use Project Zero's document analysis, e-signature, editing, and collaboration features with this comprehensive guide.</p>
+            </div>
+
+            <div class="row">
+                <!-- Table of Contents -->
+                <div class="col-lg-3">
+                    <div class="toc">
+                        <h2>Contents</h2>
+                        <a href="#getting-started" class="toc-link">Getting Started</a>
+                        <a href="#document-upload" class="toc-link">Document Upload</a>
+                        <a href="#document-analysis" class="toc-link">Document Analysis</a>
+                        <a href="#document-editor" class="toc-link">Document Editor</a>
+                        <a href="#annotations" class="toc-link toc-link-sub">Annotations</a>
+                        <a href="#document-editing" class="toc-link toc-link-sub">Document Editing</a>
+                        <a href="#e-signature" class="toc-link">E-Signature</a>
+                        <a href="#creating-signatures" class="toc-link toc-link-sub">Creating Signatures</a>
+                        <a href="#signing-documents" class="toc-link toc-link-sub">Signing Documents</a>
+                        <a href="#multiple-signers" class="toc-link toc-link-sub">Multiple Signers</a>
+                        <a href="#document-comparison" class="toc-link">Document Comparison</a>
+                        <a href="#collaboration" class="toc-link">Collaboration</a>
+                        <a href="#advanced-features" class="toc-link">Advanced Features</a>
+                        <a href="#troubleshooting" class="toc-link">Troubleshooting</a>
+                    </div>
+                </div>
+
+                <!-- Guide Content -->
+                <div class="col-lg-9">
+                    <!-- Getting Started -->
+                    <section id="getting-started" class="guide-section">
+                        <h2>Getting Started</h2>
+                        <p>Welcome to Project Zero! This guide will help you get familiar with all the features and functionalities of our document management platform.</p>
+                        
+                        <h3>Key Features</h3>
+                        <ul>
+                            <li><strong>Document Analysis</strong> - Upload and analyze legal documents for insights, risks, and opportunities.</li>
+                            <li><strong>E-Signature</strong> - Create, manage, and apply electronic signatures to documents with multi-party signing workflows.</li>
+                            <li><strong>Document Editor</strong> - View, edit, annotate, and collaborate on documents including PDFs.</li>
+                            <li><strong>Document Comparison</strong> - Compare different versions of documents to identify changes.</li>
+                            <li><strong>Collaboration</strong> - Work simultaneously with others on documents with real-time chat.</li>
+                        </ul>
+                        
+                        <h3>Navigation</h3>
+                        <p>The main navigation bar at the top of the screen allows you to access the primary features:</p>
+                        <ul>
+                            <li><strong>Document Analysis</strong> - Upload and analyze documents</li>
+                            <li><strong>E-Signature</strong> - Sign documents and manage signature requests</li>
+                            <li><strong>Document Editor</strong> - Edit, annotate, and collaborate on documents</li>
+                            <li><strong>User Guide</strong> - Access this comprehensive guide</li>
+                        </ul>
+                    </section>
+
+                    <!-- Document Upload -->
+                    <section id="document-upload" class="guide-section">
+                        <h2>Document Upload</h2>
+                        <p>Before you can analyze, edit, or sign documents, you'll need to upload them to the platform. Here's how to upload documents:</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Access Upload Area</strong></p>
+                                <p>Navigate to either the Document Analysis page or E-Signature page, where you'll find a dedicated upload area.</p>
+                            </li>
+                            <li>
+                                <p><strong>Select or Drop Files</strong></p>
+                                <p>Click the "Browse Files" button to select files from your computer, or simply drag and drop files directly onto the upload area.</p>
+                            </li>
+                            <li>
+                                <p><strong>Wait for Processing</strong></p>
+                                <p>Once uploaded, your document will be processed. For large documents, this might take a moment. You'll see a progress indicator during the upload.</p>
+                            </li>
+                            <li>
+                                <p><strong>View Uploaded Document</strong></p>
+                                <p>After successful upload, you'll either be redirected to the document view or see a success message.</p>
+                            </li>
+                        </ol>
+                        
+                        <div class="feature-highlight">
+                            <h4>Supported File Types</h4>
+                            <p>Project Zero supports various document formats, including:</p>
+                            <ul>
+                                <li><code>PDF</code> - Portable Document Format files</li>
+                                <li><code>DOC/DOCX</code> - Microsoft Word documents</li>
+                                <li><code>TXT</code> - Plain text files</li>
+                                <li><code>RTF</code> - Rich Text Format files</li>
+                            </ul>
+                            <p>The maximum file size for uploads is 25MB.</p>
+                        </div>
+                        
+                        <h3>Troubleshooting Upload Issues</h3>
+                        <p>If you encounter problems when uploading documents:</p>
+                        <ul>
+                            <li>Ensure your file is in a supported format</li>
+                            <li>Check that the file size is under 25MB</li>
+                            <li>Try using a different browser or clearing your browser cache</li>
+                            <li>If the upload progress gets stuck, try refreshing the page and uploading again</li>
+                            <li>Make sure you have a stable internet connection</li>
+                        </ul>
+                    </section>
+
+                    <!-- Document Analysis -->
+                    <section id="document-analysis" class="guide-section">
+                        <h2>Document Analysis</h2>
+                        <p>The Document Analysis feature helps you extract insights from your legal documents, identify potential risks, and provide recommendations.</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Upload a Document</strong></p>
+                                <p>Start by uploading a document through the Document Analysis page as described in the previous section.</p>
+                            </li>
+                            <li>
+                                <p><strong>Analysis Process</strong></p>
+                                <p>Once uploaded, the document will be automatically processed and analyzed. This process may take a few moments depending on the document size and complexity.</p>
+                            </li>
+                            <li>
+                                <p><strong>View Analysis Results</strong></p>
+                                <p>After analysis is complete, you'll be taken to a results page showing key insights, potential risks, and recommendations based on the document content.</p>
+                            </li>
+                            <li>
+                                <p><strong>Explore Detailed Insights</strong></p>
+                                <p>Click on any section in the analysis results to see more detailed information about specific clauses, terms, or potential issues.</p>
+                            </li>
+                        </ol>
+                        
+                        <h3>Analysis Features</h3>
+                        <ul>
+                            <li><strong>Key Clause Extraction</strong> - Identifies important clauses in the document</li>
+                            <li><strong>Risk Assessment</strong> - Highlights potential legal or business risks</li>
+                            <li><strong>Entity Recognition</strong> - Identifies organizations, people, dates, and monetary values</li>
+                            <li><strong>Document Summary</strong> - Provides a concise overview of the document</li>
+                        </ul>
+                    </section>
+
+                    <!-- Document Editor -->
+                    <section id="document-editor" class="guide-section">
+                        <h2>Document Editor</h2>
+                        <p>The Document Editor provides a comprehensive set of tools for viewing, editing, annotating, and collaborating on documents.</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Access the Editor</strong></p>
+                                <p>Click on "Document Editor" in the main navigation or select "Edit" from the document actions menu after uploading.</p>
+                            </li>
+                            <li>
+                                <p><strong>Select a Document</strong></p>
+                                <p>If you haven't already selected a document, you'll be prompted to choose one from your uploaded documents or upload a new one.</p>
+                            </li>
+                            <li>
+                                <p><strong>Explore the Interface</strong></p>
+                                <p>The editor interface consists of:</p>
+                                <ul>
+                                    <li>Left sidebar with tools</li>
+                                    <li>Main document viewing area</li>
+                                    <li>Top toolbar with contextual controls</li>
+                                    <li>Optional collaboration panel (right side)</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <p><strong>Use Document Tools</strong></p>
+                                <p>Select different tools from the sidebar to view, edit, annotate, sign, compare, or collaborate on the document.</p>
+                            </li>
+                        </ol>
+                        
+                        <h3>Navigation Controls</h3>
+                        <ul>
+                            <li><strong>Zoom controls</strong> - Zoom in/out of the document</li>
+                            <li><strong>Page controls</strong> - Navigate between pages of multi-page documents</li>
+                            <li><strong>Document info</strong> - View and click to change the current document</li>
+                            <li><strong>Save button</strong> - Save your changes</li>
+                        </ul>
+                    </section>
+                    
+                    <!-- Annotations -->
+                    <section id="annotations" class="guide-section">
+                        <h2>Annotations</h2>
+                        <p>The annotation tools allow you to add notes, comments, and highlights to documents without changing the original content.</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Select Annotate Tool</strong></p>
+                                <p>Click the "Annotate" tool in the left sidebar of the Document Editor.</p>
+                            </li>
+                            <li>
+                                <p><strong>Choose Annotation Type</strong></p>
+                                <p>Select either "Highlight" or "Comment" from the toolbar that appears at the top.</p>
+                            </li>
+                            <li>
+                                <p><strong>Create Annotation</strong></p>
+                                <p>For highlights or comments, click and drag across the text or area you want to annotate.</p>
+                            </li>
+                            <li>
+                                <p><strong>Add Comment Text</strong></p>
+                                <p>If adding a comment, a dialog will appear where you can enter your comment text.</p>
+                            </li>
+                            <li>
+                                <p><strong>View and Edit Annotations</strong></p>
+                                <p>Click on any annotation to view its content. If you're the creator, you can edit or delete it.</p>
+                            </li>
+                        </ol>
+                        
+                        <div class="feature-highlight">
+                            <h4>Annotation Tips</h4>
+                            <ul>
+                                <li>Annotations are saved with the document and visible to collaborators</li>
+                                <li>Use different colors for different types of annotations (coming soon)</li>
+                                <li>Annotations can be filtered or hidden using the view options</li>
+                                <li>You can export a document with or without annotations</li>
+                            </ul>
+                        </div>
+                    </section>
+                    
+                    <!-- Document Editing -->
+                    <section id="document-editing" class="guide-section">
+                        <h2>Document Editing</h2>
+                        <p>While PDF editing requires a premium PDF library, you can still make basic changes to documents:</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Select Edit Tool</strong></p>
+                                <p>Click the "Edit" tool in the left sidebar of the Document Editor.</p>
+                            </li>
+                            <li>
+                                <p><strong>Choose Edit Type</strong></p>
+                                <p>Select either "Text" or "Image" from the toolbar that appears at the top.</p>
+                            </li>
+                            <li>
+                                <p><strong>Make Changes</strong></p>
+                                <p>For full document editing capabilities, consider upgrading to the premium version.</p>
+                            </li>
+                        </ol>
+                        
+                        <p><em>Note: Full document editing is available in the premium version, which includes the ability to edit text, add images, and make other changes directly in PDFs and other document formats.</em></p>
+                    </section>
+
+                    <!-- E-Signature -->
+                    <section id="e-signature" class="guide-section">
+                        <h2>E-Signature</h2>
+                        <p>The E-Signature feature allows you to create, manage, and apply electronic signatures to documents with legally-binding validity.</p>
+                        
+                        <h3 id="creating-signatures">Creating Signatures</h3>
+                        <p>There are three ways to create your signature:</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Draw Your Signature</strong></p>
+                                <p>Use your mouse or touchscreen to draw your signature directly.</p>
+                            </li>
+                            <li>
+                                <p><strong>Type Your Signature</strong></p>
+                                <p>Type your name and select a signature style to create a typed signature.</p>
+                            </li>
+                            <li>
+                                <p><strong>Upload a Signature Image</strong></p>
+                                <p>Upload an image of your handwritten signature.</p>
+                            </li>
+                        </ol>
+                        
+                        <h3 id="signing-documents">Signing Documents</h3>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Upload a Document</strong></p>
+                                <p>Start by uploading the document you need signed through the E-Signature page.</p>
+                            </li>
+                            <li>
+                                <p><strong>Add Signature Points</strong></p>
+                                <p>In the Document Editor, select the "Sign" tool from the sidebar. Click where you want to add a signature in the document.</p>
+                            </li>
+                            <li>
+                                <p><strong>Choose Signature Method</strong></p>
+                                <p>Select your preferred signature method (draw, type, or upload) when the signature dialog appears.</p>
+                            </li>
+                            <li>
+                                <p><strong>Apply Your Signature</strong></p>
+                                <p>Create your signature and click "Apply Signature" to place it on the document.</p>
+                            </li>
+                            <li>
+                                <p><strong>Complete Signing</strong></p>
+                                <p>After adding all required signatures, click "Save" to save the signed document.</p>
+                            </li>
+                        </ol>
+                        
+                        <h3 id="multiple-signers">Multiple Signers</h3>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Add Signers</strong></p>
+                                <p>While viewing your document in the Document Editor, select the "Collaborate" tool and click "Invite" to add signers.</p>
+                            </li>
+                            <li>
+                                <p><strong>Enter Signer Details</strong></p>
+                                <p>Enter the name and email address of each person who needs to sign the document. You can also add a personalized message.</p>
+                            </li>
+                            <li>
+                                <p><strong>Assign Signature Fields</strong></p>
+                                <p>Use the "Sign" tool to place signature fields for each signer. You can specify which signer each field is for.</p>
+                            </li>
+                            <li>
+                                <p><strong>Send for Signature</strong></p>
+                                <p>Once you've added all signers and assigned fields, save the document to notify them via email.</p>
+                            </li>
+                            <li>
+                                <p><strong>Track Progress</strong></p>
+                                <p>You can track the signing progress in the document details page, which shows who has signed and who still needs to sign.</p>
+                            </li>
+                        </ol>
+                        
+                        <div class="feature-highlight">
+                            <h4>E-Signature Security</h4>
+                            <p>All signatures are:</p>
+                            <ul>
+                                <li>Time-stamped with creation date</li>
+                                <li>Associated with the signer's identity</li>
+                                <li>Securely stored and tamper-evident</li>
+                                <li>Compliant with major e-signature laws</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Document Comparison -->
+                    <section id="document-comparison" class="guide-section">
+                        <h2>Document Comparison</h2>
+                        <p>The Document Comparison feature allows you to compare different versions of a document to identify changes.</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Access Comparison Tool</strong></p>
+                                <p>In the Document Editor, select the "Compare" tool from the sidebar.</p>
+                            </li>
+                            <li>
+                                <p><strong>Select Documents</strong></p>
+                                <p>Choose the second document you want to compare with the current document.</p>
+                            </li>
+                            <li>
+                                <p><strong>Choose Comparison Type</strong></p>
+                                <p>Select either "Text comparison" (to detect changes in content) or "Visual comparison" (for side-by-side view).</p>
+                            </li>
+                            <li>
+                                <p><strong>View Results</strong></p>
+                                <p>After comparison is complete, the differences between the documents will be highlighted.</p>
+                            </li>
+                        </ol>
+                        
+                        <h3>Comparison Features</h3>
+                        <ul>
+                            <li><strong>Text Comparison</strong> - Highlights added, removed, and changed text</li>
+                            <li><strong>Visual Comparison</strong> - Shows documents side by side for visual reference</li>
+                            <li><strong>Change Summary</strong> - Provides a list of all changes detected</li>
+                        </ul>
+                    </section>
+
+                    <!-- Collaboration -->
+                    <section id="collaboration" class="guide-section">
+                        <h2>Collaboration</h2>
+                        <p>The Collaboration features allow you to work with others on the same document in real-time.</p>
+                        
+                        <ol class="steps-list">
+                            <li>
+                                <p><strong>Invite Collaborators</strong></p>
+                                <p>In the Document Editor, select the "Collaborate" tool from the sidebar and click "Invite".</p>
+                            </li>
+                            <li>
+                                <p><strong>Set Permissions</strong></p>
+                                <p>Enter the email addresses of your collaborators and set their permissions:</p>
+                                <ul>
+                                    <li><strong>Viewer</strong> - Can only view the document</li>
+                                    <li><strong>Commenter</strong> - Can view and add comments</li>
+                                    <li><strong>Editor</strong> - Can make changes to the document</li>
+                                    <li><strong>Owner</strong> - Has full control including inviting others</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <p><strong>Send Invitations</strong></p>
+                                <p>Add an optional message and send the invitations. Collaborators will receive an email with a link to join.</p>
+                            </li>
+                            <li>
+                                <p><strong>Use Collaboration Panel</strong></p>
+                                <p>Click the collaborators icon in the top toolbar to open the collaboration panel, where you can see who's viewing the document and chat with them.</p>
+                            </li>
+                        </ol>
+                        
+                        <h3>Real-time Features</h3>
+                        <ul>
+                            <li><strong>Presence Indicators</strong> - See who is currently viewing the document</li>
+                            <li><strong>Chat</strong> - Communicate with other collaborators in real-time</li>
+                            <li><strong>Change Tracking</strong> - See who made what changes to the document</li>
+                        </ul>
+                    </section>
+
+                    <!-- Advanced Features -->
+                    <section id="advanced-features" class="guide-section">
+                        <h2>Advanced Features</h2>
+                        <p>Project Zero includes several advanced features for power users:</p>
+                        
+                        <h3>Document Security</h3>
+                        <ul>
+                            <li><strong>Access Control</strong> - Set precise permissions for who can view, comment on, or edit your documents</li>
+                            <li><strong>Audit Trails</strong> - Track all actions performed on a document</li>
+                            <li><strong>Document Expiry</strong> - Set documents to expire after a certain date</li>
+                        </ul>
+                        
+                        <h3>Workflow Automation</h3>
+                        <ul>
+                            <li><strong>Signing Sequences</strong> - Define the exact order in which people should sign a document</li>
+                            <li><strong>Automatic Reminders</strong> - Send automatic reminders to people who haven't signed yet</li>
+                            <li><strong>Notification Rules</strong> - Set up custom notification rules for document events</li>
+                        </ul>
+                        
+                        <h3>Integration Options</h3>
+                        <ul>
+                            <li><strong>API Access</strong> - Integrate Project Zero with your existing systems</li>
+                            <li><strong>Webhook Support</strong> - Receive real-time notifications of document events</li>
+                            <li><strong>Bulk Operations</strong> - Process multiple documents at once</li>
+                        </ul>
+                    </section>
+
+                    <!-- Troubleshooting -->
+                    <section id="troubleshooting" class="guide-section">
+                        <h2>Troubleshooting</h2>
+                        <p>If you encounter issues while using Project Zero, try these solutions to common problems:</p>
+                        
+                        <h3>Upload Issues</h3>
+                        <ul>
+                            <li><strong>File too large</strong> - Ensure your file is under 25MB</li>
+                            <li><strong>Unsupported format</strong> - Check that your file type is supported</li>
+                            <li><strong>Upload stuck</strong> - Refresh the page and try again</li>
+                        </ul>
+                        
+                        <h3>Viewing Issues</h3>
+                        <ul>
+                            <li><strong>Document not loading</strong> - Try refreshing the page or using a different browser</li>
+                            <li><strong>Missing pages</strong> - Check that the document was completely uploaded</li>
+                            <li><strong>Formatting issues</strong> - Some complex formatting may not be preserved in all file types</li>
+                        </ul>
+                        
+                        <h3>E-Signature Issues</h3>
+                        <ul>
+                            <li><strong>Can't add signature</strong> - Ensure you're in "Sign" mode</li>
+                            <li><strong>Signature not showing</strong> - Try refreshing the page</li>
+                            <li><strong>Email invites not received</strong> - Check spam folders or try resending</li>
+                        </ul>
+                        
+                        <h3>Contact Support</h3>
+                        <p>If you continue to experience issues, please contact our support team:</p>
+                        <ul>
+                            <li>Email: support@projectzero.com</li>
+                            <li>Support hours: Monday - Friday, 9am - 5pm ET</li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Project Zero. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple active link handling for TOC
+        document.addEventListener('DOMContentLoaded', function() {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            const sections = document.querySelectorAll('.guide-section');
+            
+            // Add click handler for TOC links
+            tocLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // Scroll to section with offset for navbar
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Update active link on scroll
+            window.addEventListener('scroll', function() {
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 120;
+                    const sectionHeight = section.offsetHeight;
+                    
+                    if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+                
+                tocLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

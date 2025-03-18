@@ -3,491 +3,606 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Signature - Project Zero</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <title>E-Sign | LegalDoc Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #2563eb;
-            --primary-light: #3b82f6;
             --primary-dark: #1d4ed8;
             --secondary-color: #64748b;
             --success-color: #22c55e;
-            --danger-color: #ef4444;
             --warning-color: #f59e0b;
-            --background-light: #f8fafc;
-            --text-dark: #0f172a;
-            --text-light: #64748b;
+            --danger-color: #ef4444;
+            --light-bg: #f8fafc;
+            --dark-bg: #0f172a;
             --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-            --transition-base: all 0.2s ease;
         }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            line-height: 1.5;
-            color: var(--text-dark);
-            background-color: var(--background-light);
+            background: var(--light-bg);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            color: #1e293b;
         }
 
         .navbar {
-            background-color: white;
-            box-shadow: var(--shadow-sm);
-            padding: 1rem 0;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
         .navbar-brand {
+            color: var(--primary-color) !important;
             font-weight: 700;
-            color: var(--primary-color);
             font-size: 1.5rem;
-            transition: var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .navbar-brand:hover {
-            color: var(--primary-dark);
-        }
-
-        .nav-link {
-            font-weight: 500;
-            color: var(--text-dark);
-            padding: 0.5rem 1rem;
-            transition: var(--transition-base);
-            border-radius: 0.5rem;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary-color);
-            background-color: var(--background-light);
+        .nav-version {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
         }
 
         .main-content {
-            flex: 1;
-            padding: 3rem 0;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 4rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .page-header p {
-            font-size: 1.125rem;
-            color: var(--text-light);
-            margin: 0 auto;
-        }
-
-        .signature-container {
-            max-width: 700px;
-            margin: 0 auto;
             padding: 2rem;
-            background-color: white;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-md);
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .signature-pad {
-            width: 100%;
-            height: 200px;
-            border: 2px dashed var(--border-color);
-            border-radius: 1rem;
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
             overflow: hidden;
-            position: relative;
         }
 
-        .signature-pad canvas {
-            width: 100%;
-            height: 100%;
-            background-color: white;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .signature-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-outline-secondary {
-            color: var(--secondary-color);
-            border-color: var(--border-color);
-        }
-
-        .btn-outline-secondary:hover {
-            background-color: var(--background-light);
-            transform: translateY(-1px);
-        }
-
-        .signature-type-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
+        .card-header {
+            background: white;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
+            padding: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-bg);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        .signature-type-tabs button {
-            padding: 0.5rem 1rem;
-            background: none;
-            border: none;
-            font-weight: 500;
-            color: var(--text-light);
-            border-radius: 0.5rem;
-            transition: var(--transition-base);
+        .card-body {
+            padding: 1.5rem;
         }
 
-        .signature-type-tabs button.active {
-            background-color: var(--primary-color);
-            color: white;
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            background-color: rgba(37, 99, 235, 0.02);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .signature-type-tabs button:hover:not(.active) {
-            background-color: var(--background-light);
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--success-color);
+            background-color: rgba(34, 197, 94, 0.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
             color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
         }
 
-        .signature-status {
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .btn-action {
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.875rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .signature-form {
+            display: none;
             margin-top: 1.5rem;
+        }
+
+        .signature-form.show {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .signature-preview {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: var(--light-bg);
+        }
+
+        .signature-preview h5 {
+            margin-bottom: 1rem;
+            color: var(--dark-bg);
+        }
+
+        .signature-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .signature-detail {
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .signature-detail-label {
             font-size: 0.875rem;
-            color: var(--text-light);
+            color: var(--secondary-color);
+            margin-bottom: 0.25rem;
         }
 
-        .signature-status.saved {
-            color: var(--success-color);
+        .signature-detail-value {
+            font-weight: 500;
+            color: var(--dark-bg);
         }
 
-        .footer {
-            background-color: white;
-            padding: 2rem 0;
-            border-top: 1px solid var(--border-color);
-            margin-top: auto;
+        .toast {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .footer p {
-            color: var(--text-light);
-            margin: 0;
-            text-align: center;
+        .toast-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+        }
+
+        .toast-body {
+            padding: 1rem;
         }
 
         @media (max-width: 768px) {
             .main-content {
-                padding: 2rem 0;
-            }
-
-            .page-header {
-                margin-bottom: 3rem;
-            }
-
-            .page-header h1 {
-                font-size: 2rem;
-            }
-
-            .page-header p {
-                font-size: 1rem;
-            }
-
-            .signature-container {
                 padding: 1rem;
             }
 
-            .controls {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
+            .card-header {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .upload-area {
+                padding: 1.5rem;
+            }
+
+            .btn-action {
+                padding: 0.75rem 1.25rem;
+            }
+
+            .signature-details {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* Toast notifications */
-        .toast-container {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 1050;
-        }
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: var(--dark-bg);
+                color: #e2e8f0;
+            }
 
-        .toast {
-            background-color: white;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            box-shadow: var(--shadow-lg);
-            min-width: 300px;
-            max-width: 400px;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-        }
+            .navbar {
+                background: #1e293b;
+            }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
+            .card {
+                background: #1e293b;
+                border-color: #334155;
+            }
 
-        .toast.success {
-            border-left: 4px solid var(--success-color);
-        }
+            .card-header {
+                background: #1e293b;
+                border-bottom-color: #334155;
+                color: #e2e8f0;
+            }
 
-        .toast.error {
-            border-left: 4px solid var(--danger-color);
-        }
+            .upload-area {
+                background-color: rgba(37, 99, 235, 0.1);
+            }
 
-        .toast.warning {
-            border-left: 4px solid var(--warning-color);
-        }
-        
-        /* Type signature container */
-        .signature-type-container {
-            display: none;
-        }
-        
-        #typed-signature-container {
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        #typed-signature {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        #typed-signature-preview {
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white;
-            border: 1px dashed var(--border-color);
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .signature-style-options {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .signature-style-btn {
-            border: 1px solid var(--border-color);
-            border-radius: 0.25rem;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: var(--transition-base);
-        }
-        
-        .signature-style-btn:hover, .signature-style-btn.active {
-            border-color: var(--primary-color);
-            background-color: rgba(37, 99, 235, 0.1);
-        }
-        
-        /* Upload signature container */
-        #upload-signature-container {
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .upload-btn-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            cursor: pointer;
-        }
-        
-        .upload-btn-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-        
-        #uploaded-signature-preview {
-            max-width: 100%;
-            max-height: 150px;
-            margin-top: 1rem;
-            display: none;
+            .form-control {
+                background: #1e293b;
+                border-color: #334155;
+                color: #e2e8f0;
+            }
+
+            .form-control:focus {
+                background: #1e293b;
+                border-color: var(--primary-color);
+                color: #e2e8f0;
+            }
+
+            .signature-preview {
+                background: #1e293b;
+                border-color: #334155;
+            }
+
+            .signature-preview h5 {
+                color: #e2e8f0;
+            }
+
+            .signature-detail {
+                background: #1e293b;
+                border-color: #334155;
+            }
+
+            .signature-detail-value {
+                color: #e2e8f0;
+            }
+
+            .toast {
+                background: #1e293b;
+                color: #e2e8f0;
+            }
+
+            .toast-header {
+                border-bottom-color: #334155;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-file-contract me-2"></i>
-                Project Zero
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-file-contract"></i>
+                LegalDoc Pro
+                <span class="nav-version">v1.0.0</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/legal-dd">Document Analysis</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/e-sign">E-Signature</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user-guide">User Guide</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Page Header -->
-            <div class="page-header">
-                <h1>E-Signature</h1>
-                <p>Create and manage electronic signatures for your documents. Legally binding and secure.</p>
+    <div class="container main-content">
+        <div class="row">
+            <!-- Document Upload -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-file-upload"></i>
+                        Upload Document
+                    </div>
+                    <div class="card-body">
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="upload-area" id="dropZone">
+                                <i class="fas fa-file-upload upload-icon"></i>
+                                <h5>Drag & Drop Files Here</h5>
+                                <p class="text-muted">or</p>
+                                <input type="file" id="fileInput" name="document" class="d-none" accept=".pdf,.doc,.docx,.txt">
+                                <button type="button" class="btn btn-primary btn-action" id="browseBtn">
+                                    Select File
+                                </button>
+                                <div class="mt-3 text-muted small">
+                                    Supported formats: PDF, DOC, DOCX, TXT | Max size: 25MB
+                                </div>
+                            </div>
+                        </form>
+                        <div id="uploadResult" class="mt-3"></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Signature Section -->
-            <div class="signature-container">
-                <div class="signature-type-tabs">
-                    <button class="active" data-target="draw-signature-container">Draw</button>
-                    <button data-target="typed-signature-container">Type</button>
-                    <button data-target="upload-signature-container">Upload</button>
-                </div>
-                
-                <!-- Draw Signature -->
-                <div id="draw-signature-container" class="signature-type-container" style="display: block;">
-                    <div class="signature-pad">
-                        <canvas id="signatureCanvas"></canvas>
+            <!-- Signature Form -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-signature"></i>
+                        Sign Document
                     </div>
-                    
-                    <div class="controls">
-                        <div class="signature-info">
-                            <p class="mb-0">Draw your signature above</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Type Signature -->
-                <div id="typed-signature-container" class="signature-type-container">
-                    <div class="mb-3">
-                        <label for="typed-signature" class="form-label">Type your signature</label>
-                        <input type="text" id="typed-signature" class="form-control" placeholder="Your Name">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Select Style</label>
-                        <div class="signature-style-options">
-                            <button class="signature-style-btn active" data-style="default">Default</button>
-                            <button class="signature-style-btn" data-style="style1">Elegant</button>
-                            <button class="signature-style-btn" data-style="style2">Bold</button>
-                            <button class="signature-style-btn" data-style="style3">Script</button>
-                        </div>
-                    </div>
-                    
-                    <div id="typed-signature-preview"></div>
-                </div>
-                
-                <!-- Upload Signature -->
-                <div id="upload-signature-container" class="signature-type-container">
-                    <div class="mb-3">
-                        <label class="form-label">Upload an image of your signature</label>
-                        <div class="upload-btn-wrapper">
-                            <button class="btn btn-outline-secondary">
-                                <i class="fas fa-upload me-2"></i>Choose File
+                    <div class="card-body">
+                        <form id="signatureForm" class="signature-form">
+                            <div class="form-group">
+                                <label class="form-label" for="signerName">Full Name</label>
+                                <input type="text" class="form-control" id="signerName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="signerEmail">Email Address</label>
+                                <input type="email" class="form-control" id="signerEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="signatureType">Signature Type</label>
+                                <select class="form-control" id="signatureType" required>
+                                    <option value="electronic">Electronic Signature</option>
+                                    <option value="digital">Digital Signature</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-action w-100">
+                                <i class="fas fa-signature"></i>
+                                Sign Document
                             </button>
-                            <input type="file" id="signature-upload" accept="image/*">
-                        </div>
-                        <p class="small text-muted mt-2">Accepted formats: JPG, PNG, GIF (max 2MB)</p>
+                        </form>
+                        <div id="signatureResult" class="mt-3"></div>
                     </div>
-                    
-                    <img id="uploaded-signature-preview" alt="Uploaded Signature">
                 </div>
-                
-                <div class="signature-actions text-end mt-4">
-                    <button class="btn btn-outline-secondary" id="clearBtn">
-                        <i class="fas fa-eraser me-2"></i>Clear
-                    </button>
-                    <button class="btn btn-primary" id="saveBtn">
-                        <i class="fas fa-save me-2"></i>Save Signature
-                    </button>
-                </div>
-                
-                <div class="signature-status" id="signatureStatus"></div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Project Zero. All rights reserved.</p>
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong class="me-auto" id="toastTitle">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage"></div>
         </div>
-    </footer>
+    </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentFile = null;
+        let currentDocumentId = null;
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-    <script src="/js/e-sign.js"></script>
-    <script src="/js/app.js"></script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const browseBtn = document.getElementById('browseBtn');
+            const uploadForm = document.getElementById('uploadForm');
+            const uploadResult = document.getElementById('uploadResult');
+            const signatureForm = document.getElementById('signatureForm');
+            const signatureResult = document.getElementById('signatureResult');
+
+            // Handle file browsing
+            browseBtn.addEventListener('click', () => fileInput.click());
+            
+            // Handle file selection
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Handle drag and drop
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect();
+                }
+            });
+
+            // Handle form submission
+            uploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!currentFile) return;
+
+                const formData = new FormData();
+                formData.append('document', currentFile);
+
+                try {
+                    uploadResult.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            Uploading document...
+                        </div>
+                    `;
+
+                    const response = await fetch('/api/test/upload-document', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        currentDocumentId = data.file.id;
+                        uploadResult.innerHTML = `
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Document uploaded successfully!
+                            </div>
+                        `;
+                        signatureForm.classList.add('show');
+                        showToast('Success', 'Document uploaded successfully');
+                    } else {
+                        throw new Error(data.message || 'Upload failed');
+                    }
+                } catch (error) {
+                    uploadResult.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            ${error.message}
+                        </div>
+                    `;
+                    showToast('Error', error.message);
+                }
+            });
+
+            // Handle signature form submission
+            signatureForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!currentDocumentId) {
+                    showToast('Error', 'Please upload a document first');
+                    return;
+                }
+
+                const signerName = document.getElementById('signerName').value;
+                const signerEmail = document.getElementById('signerEmail').value;
+                const signatureType = document.getElementById('signatureType').value;
+
+                try {
+                    signatureResult.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            Processing signature...
+                        </div>
+                    `;
+
+                    const response = await fetch(`/api/test/sign-document/${currentDocumentId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            signatureType,
+                            signerName,
+                            signerEmail
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        signatureResult.innerHTML = `
+                            <div class="signature-preview">
+                                <h5>
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    Document Signed Successfully
+                                </h5>
+                                <div class="signature-details">
+                                    <div class="signature-detail">
+                                        <div class="signature-detail-label">Document ID</div>
+                                        <div class="signature-detail-value">${data.signature.documentId}</div>
+                                    </div>
+                                    <div class="signature-detail">
+                                        <div class="signature-detail-label">Signer Name</div>
+                                        <div class="signature-detail-value">${data.signature.signerName}</div>
+                                    </div>
+                                    <div class="signature-detail">
+                                        <div class="signature-detail-label">Signature Type</div>
+                                        <div class="signature-detail-value">${data.signature.signatureType}</div>
+                                    </div>
+                                    <div class="signature-detail">
+                                        <div class="signature-detail-label">Signed At</div>
+                                        <div class="signature-detail-value">${new Date(data.signature.signedAt).toLocaleString()}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        showToast('Success', 'Document signed successfully');
+                    } else {
+                        throw new Error(data.message || 'Signature failed');
+                    }
+                } catch (error) {
+                    signatureResult.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            ${error.message}
+                        </div>
+                    `;
+                    showToast('Error', error.message);
+                }
+            });
+        });
+
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (file) {
+                currentFile = file;
+                uploadResult.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-file me-2"></i>
+                        File "${file.name}" selected (${(file.size / 1024).toFixed(2)} KB)
+                    </div>
+                `;
+                document.getElementById('uploadForm').dispatchEvent(new Event('submit'));
+            }
+        }
+
+        function showToast(title, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            new bootstrap.Toast(toast).show();
+        }
+    </script>
 </body>
 </html> 

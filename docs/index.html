@@ -3,98 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Internal Project-0 | Dashboard</title>
+  <title>LegalDoc Pro | Professional Document Processing Platform</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #1a237e;
-      --secondary-color: #283593;
-      --accent-color: #3949ab;
-      --success-color: #2e7d32;
-      --warning-color: #f57f17;
-      --danger-color: #c62828;
-      --light-bg: #f5f5f5;
-      --dark-bg: #121212;
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary-color: #64748b;
+      --success-color: #22c55e;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --light-bg: #f8fafc;
+      --dark-bg: #0f172a;
+      --border-color: #e2e8f0;
     }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background: var(--light-bg);
       min-height: 100vh;
+      color: #1e293b;
     }
 
     .navbar {
-      background: var(--primary-color);
+      background: white;
       padding: 1rem 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
     .navbar-brand {
-      color: white !important;
-      font-weight: 600;
-      font-size: 1.25rem;
+      color: var(--primary-color) !important;
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .nav-version {
-      color: rgba(255,255,255,0.7);
+      color: var(--secondary-color);
       font-size: 0.875rem;
       margin-left: 0.5rem;
     }
 
     .github-link {
-      color: rgba(255,255,255,0.9) !important;
+      color: var(--secondary-color) !important;
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      transition: color 0.2s ease;
+      transition: all 0.2s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
     }
 
     .github-link:hover {
-      color: white !important;
+      color: var(--primary-color) !important;
+      background: rgba(37, 99, 235, 0.1);
     }
 
     .main-content {
       padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .dashboard-header {
       margin-bottom: 2rem;
+      text-align: center;
     }
 
     .dashboard-title {
-      color: var(--primary-color);
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+      color: var(--dark-bg);
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
     }
 
     .dashboard-subtitle {
-      color: #666;
-      font-size: 1rem;
+      color: var(--secondary-color);
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .card {
       background: white;
-      border: none;
-      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
       margin-bottom: 1.5rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.3s ease;
+      overflow: hidden;
     }
 
     .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
     }
 
     .card-header {
       background: white;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.5rem;
       font-weight: 600;
-      color: var(--primary-color);
-      border-radius: 12px 12px 0 0 !important;
+      color: var(--dark-bg);
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
     .card-body {
@@ -102,39 +124,66 @@
     }
 
     .upload-area {
-      border: 2px dashed var(--accent-color);
-      border-radius: 8px;
-      padding: 2rem;
+      border: 2px dashed var(--primary-color);
+      border-radius: 12px;
+      padding: 2.5rem;
       text-align: center;
-      background-color: rgba(57, 73, 171, 0.03);
+      background-color: rgba(37, 99, 235, 0.02);
       transition: all 0.3s ease;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-area::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .upload-area:hover::before {
+      opacity: 1;
     }
 
     .upload-area:hover, .upload-area.dragover {
       border-color: var(--success-color);
-      background-color: rgba(46, 125, 50, 0.03);
+      background-color: rgba(34, 197, 94, 0.02);
     }
 
     .upload-icon {
-      font-size: 2.5rem;
-      color: var(--accent-color);
-      margin-bottom: 1rem;
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .upload-area:hover .upload-icon {
+      transform: scale(1.1);
     }
 
     .btn-action {
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      padding: 0.875rem 1.75rem;
+      border-radius: 12px;
       font-weight: 500;
       transition: all 0.2s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
     .btn-action:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     .btn-primary {
@@ -142,9 +191,14 @@
       border-color: var(--primary-color);
     }
 
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+
     .btn-info {
-      background: var(--accent-color);
-      border-color: var(--accent-color);
+      background: var(--primary-color);
+      border-color: var(--primary-color);
       color: white;
     }
 
@@ -154,21 +208,32 @@
     }
 
     .demo-note {
-      background: rgba(57, 73, 171, 0.1);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
+      background: rgba(37, 99, 235, 0.05);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
       color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
     .progress {
-      height: 6px;
-      border-radius: 3px;
+      height: 8px;
+      border-radius: 4px;
+      background-color: rgba(37, 99, 235, 0.1);
+    }
+
+    .progress-bar {
+      background-color: var(--primary-color);
+      transition: width 0.3s ease;
     }
 
     .alert {
-      border-radius: 8px;
+      border-radius: 12px;
       border: none;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .result-section {
@@ -176,25 +241,68 @@
       border-radius: 12px;
       padding: 1.5rem;
       margin-top: 1rem;
+      border: 1px solid var(--border-color);
     }
 
     .result-title {
-      color: var(--primary-color);
+      color: var(--dark-bg);
       font-weight: 600;
       margin-bottom: 1rem;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     pre {
       background: var(--light-bg);
-      padding: 1rem;
-      border-radius: 8px;
+      padding: 1.25rem;
+      border-radius: 12px;
       font-size: 0.875rem;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    .toast {
+      background: white;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .toast-header {
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem;
+    }
+
+    .toast-body {
+      padding: 1rem;
     }
 
     @media (max-width: 768px) {
       .main-content {
         padding: 1rem;
+      }
+
+      .dashboard-title {
+        font-size: 2rem;
+      }
+
+      .dashboard-subtitle {
+        font-size: 1rem;
+      }
+
+      .card-header {
+        padding: 1.25rem;
+        font-size: 1.1rem;
+      }
+
+      .upload-area {
+        padding: 1.5rem;
+      }
+
+      .btn-action {
+        padding: 0.75rem 1.25rem;
       }
     }
 
@@ -202,44 +310,61 @@
     @media (prefers-color-scheme: dark) {
       body {
         background: var(--dark-bg);
-        color: #fff;
+        color: #e2e8f0;
+      }
+
+      .navbar {
+        background: #1e293b;
       }
 
       .card {
-        background: #1e1e1e;
+        background: #1e293b;
+        border-color: #334155;
       }
 
       .card-header {
-        background: #1e1e1e;
-        border-bottom-color: rgba(255,255,255,0.1);
+        background: #1e293b;
+        border-bottom-color: #334155;
+        color: #e2e8f0;
       }
 
       .upload-area {
-        background-color: rgba(57, 73, 171, 0.1);
+        background-color: rgba(37, 99, 235, 0.1);
       }
 
       .dashboard-subtitle {
-        color: #aaa;
+        color: #94a3b8;
       }
 
       pre {
-        background: #2d2d2d;
-        color: #fff;
+        background: #0f172a;
+        color: #e2e8f0;
+        border-color: #334155;
       }
 
       .demo-note {
-        background: rgba(57, 73, 171, 0.2);
-        color: #fff;
+        background: rgba(37, 99, 235, 0.1);
+        color: #e2e8f0;
+      }
+
+      .toast {
+        background: #1e293b;
+        color: #e2e8f0;
+      }
+
+      .toast-header {
+        border-bottom-color: #334155;
       }
     }
   </style>
 </head>
 <body>
   <!-- Navigation -->
-  <nav class="navbar navbar-dark">
+  <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
       <span class="navbar-brand">
-        Internal Project-0
+        <i class="fas fa-file-contract"></i>
+        LegalDoc Pro
         <span class="nav-version">v1.0.0</span>
       </span>
       <a href="https://github.com/sounak1731/internal-project-0" class="github-link" target="_blank">
@@ -252,13 +377,15 @@
   <!-- Main Content -->
   <div class="container main-content">
     <div class="dashboard-header">
-      <h1 class="dashboard-title">Document Processing Dashboard</h1>
-      <p class="dashboard-subtitle">Upload, analyze, and process documents securely</p>
+      <h1 class="dashboard-title">Professional Document Processing Platform</h1>
+      <p class="dashboard-subtitle">Secure, efficient, and intelligent document processing for modern businesses</p>
     </div>
 
     <div class="demo-note">
-      <i class="fas fa-info-circle me-2"></i>
-      This is a demo interface. For full functionality, please run the application locally following the instructions in the <a href="https://github.com/sounak1731/internal-project-0#readme" target="_blank">README</a>.
+      <i class="fas fa-info-circle"></i>
+      <div>
+        <strong>Demo Mode:</strong> This is a fully functional demo interface. For production deployment, please follow the setup instructions in our <a href="https://github.com/sounak1731/internal-project-0#readme" target="_blank" class="text-decoration-none">documentation</a>.
+      </div>
     </div>
 
     <div class="row">
@@ -266,7 +393,7 @@
       <div class="col-md-6 mb-4">
         <div class="card">
           <div class="card-header">
-            <i class="fas fa-cloud-upload-alt me-2"></i>
+            <i class="fas fa-cloud-upload-alt"></i>
             Document Upload
           </div>
           <div class="card-body">
@@ -293,19 +420,22 @@
       <div class="col-md-6 mb-4">
         <div class="card">
           <div class="card-header">
-            <i class="fas fa-tasks me-2"></i>
+            <i class="fas fa-tasks"></i>
             Document Actions
           </div>
           <div class="card-body">
             <div id="documentActions" style="display: none;">
               <button class="btn btn-primary btn-action w-100 mb-3" onclick="analyzeDocument()">
-                <i class="fas fa-search me-2"></i>Analyze Document
+                <i class="fas fa-search"></i>
+                Analyze Document
               </button>
               <button class="btn btn-info btn-action w-100 mb-3" onclick="generateReport()">
-                <i class="fas fa-file-alt me-2"></i>Generate Report
+                <i class="fas fa-file-alt"></i>
+                Generate Report
               </button>
               <button class="btn btn-success btn-action w-100" onclick="signDocument()">
-                <i class="fas fa-signature me-2"></i>Sign Document
+                <i class="fas fa-signature"></i>
+                Sign Document
               </button>
             </div>
             <div id="actionResult" class="mt-3"></div>
@@ -319,7 +449,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <i class="fas fa-clipboard-list me-2"></i>
+            <i class="fas fa-clipboard-list"></i>
             Processing Results
           </div>
           <div class="card-body">
@@ -344,7 +474,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Demo functionality
+    let currentFile = null;
+    let currentDocumentId = null;
+
     document.addEventListener('DOMContentLoaded', function() {
       const dropZone = document.getElementById('dropZone');
       const fileInput = document.getElementById('fileInput');
@@ -352,9 +484,6 @@
       const uploadForm = document.getElementById('uploadForm');
       const uploadResult = document.getElementById('uploadResult');
       const documentActions = document.getElementById('documentActions');
-      const results = document.getElementById('results');
-
-      let currentFile = null;
 
       // Handle file browsing
       browseBtn.addEventListener('click', () => fileInput.click());
@@ -382,23 +511,74 @@
         }
       });
 
-      function handleFileSelect() {
-        const file = fileInput.files[0];
-        if (file) {
-          currentFile = file;
+      // Handle form submission
+      uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentFile) return;
+
+        const formData = new FormData();
+        formData.append('document', currentFile);
+
+        try {
           uploadResult.innerHTML = `
-            <div class="alert alert-success">
-              <i class="fas fa-check-circle me-2"></i>
-              File "${file.name}" selected (${(file.size / 1024).toFixed(2)} KB)
+            <div class="alert alert-info">
+              <i class="fas fa-spinner fa-spin me-2"></i>
+              Uploading document...
             </div>
           `;
-          documentActions.style.display = 'block';
+
+          const response = await fetch('/api/test/upload-document', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            currentDocumentId = data.file.id;
+            uploadResult.innerHTML = `
+              <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                Document uploaded successfully!
+              </div>
+            `;
+            documentActions.style.display = 'block';
+            showToast('Success', 'Document uploaded successfully');
+          } else {
+            throw new Error(data.message || 'Upload failed');
+          }
+        } catch (error) {
+          uploadResult.innerHTML = `
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-circle me-2"></i>
+              ${error.message}
+            </div>
+          `;
+          showToast('Error', error.message);
         }
-      }
+      });
     });
 
-    // Demo action functions
-    function analyzeDocument() {
+    function handleFileSelect() {
+      const file = fileInput.files[0];
+      if (file) {
+        currentFile = file;
+        uploadResult.innerHTML = `
+          <div class="alert alert-info">
+            <i class="fas fa-file me-2"></i>
+            File "${file.name}" selected (${(file.size / 1024).toFixed(2)} KB)
+          </div>
+        `;
+        document.getElementById('uploadForm').dispatchEvent(new Event('submit'));
+      }
+    }
+
+    async function analyzeDocument() {
+      if (!currentDocumentId) {
+        showToast('Error', 'Please upload a document first');
+        return;
+      }
+
       const results = document.getElementById('results');
       results.innerHTML = `
         <div class="alert alert-info">
@@ -407,25 +587,39 @@
         </div>
       `;
       
-      setTimeout(() => {
+      try {
+        const response = await fetch(`/api/test/analyze-document/${currentDocumentId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          results.innerHTML = `
+            <h4 class="result-title">
+              <i class="fas fa-search"></i>
+              Analysis Results
+            </h4>
+            <pre>${JSON.stringify(data.analysis, null, 2)}</pre>
+          `;
+          showToast('Success', 'Document analysis completed');
+        } else {
+          throw new Error(data.message || 'Analysis failed');
+        }
+      } catch (error) {
         results.innerHTML = `
-          <h4 class="result-title">Analysis Results</h4>
-          <pre>{
-  "documentType": "PDF",
-  "pageCount": 3,
-  "language": "English",
-  "entities": {
-    "dates": ["2024-03-15", "2024-04-01"],
-    "names": ["John Smith", "Jane Doe"],
-    "organizations": ["ABC Corp", "XYZ Ltd"]
-  },
-  "confidence": 0.95
-}</pre>
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            ${error.message}
+          </div>
         `;
-      }, 2000);
+        showToast('Error', error.message);
+      }
     }
 
-    function generateReport() {
+    async function generateReport() {
+      if (!currentDocumentId) {
+        showToast('Error', 'Please upload a document first');
+        return;
+      }
+
       const results = document.getElementById('results');
       results.innerHTML = `
         <div class="alert alert-info">
@@ -434,27 +628,39 @@
         </div>
       `;
       
-      setTimeout(() => {
+      try {
+        const response = await fetch(`/api/test/generate-report/${currentDocumentId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          results.innerHTML = `
+            <h4 class="result-title">
+              <i class="fas fa-file-alt"></i>
+              Generated Report
+            </h4>
+            <pre>${JSON.stringify(data.report, null, 2)}</pre>
+          `;
+          showToast('Success', 'Report generated successfully');
+        } else {
+          throw new Error(data.message || 'Report generation failed');
+        }
+      } catch (error) {
         results.innerHTML = `
-          <h4 class="result-title">Generated Report</h4>
-          <pre>{
-  "reportId": "RPT-2024-001",
-  "generatedAt": "${new Date().toISOString()}",
-  "summary": "Document analysis report for selected file",
-  "findings": {
-    "riskLevel": "Low",
-    "recommendations": [
-      "Update document metadata",
-      "Add digital signatures",
-      "Review content formatting"
-    ]
-  }
-}</pre>
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            ${error.message}
+          </div>
         `;
-      }, 2000);
+        showToast('Error', error.message);
+      }
     }
 
-    function signDocument() {
+    async function signDocument() {
+      if (!currentDocumentId) {
+        showToast('Error', 'Please upload a document first');
+        return;
+      }
+
       const results = document.getElementById('results');
       results.innerHTML = `
         <div class="alert alert-info">
@@ -463,18 +669,49 @@
         </div>
       `;
       
-      setTimeout(() => {
+      try {
+        const response = await fetch(`/api/test/sign-document/${currentDocumentId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            signatureType: 'electronic',
+            signerName: 'Demo User',
+            signerEmail: 'demo@example.com'
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          results.innerHTML = `
+            <h4 class="result-title">
+              <i class="fas fa-signature"></i>
+              Signature Details
+            </h4>
+            <pre>${JSON.stringify(data.signature, null, 2)}</pre>
+          `;
+          showToast('Success', 'Document signed successfully');
+        } else {
+          throw new Error(data.message || 'Signature failed');
+        }
+      } catch (error) {
         results.innerHTML = `
-          <h4 class="result-title">Signature Details</h4>
-          <pre>{
-  "signatureId": "SIG-2024-001",
-  "timestamp": "${new Date().toISOString()}",
-  "signatureType": "electronic",
-  "status": "completed",
-  "verificationHash": "e1a2b3c4d5..."
-}</pre>
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            ${error.message}
+          </div>
         `;
-      }, 2000);
+        showToast('Error', error.message);
+      }
+    }
+
+    function showToast(title, message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMessage').textContent = message;
+      new bootstrap.Toast(toast).show();
     }
   </script>
 </body>

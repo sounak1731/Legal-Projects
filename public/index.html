@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Zero - Document Analysis & E-Signature Platform</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <title>LegalDoc Pro | Professional Document Processing Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,302 +13,279 @@
             --primary-dark: #1d4ed8;
             --secondary-color: #64748b;
             --success-color: #22c55e;
-            --background-light: #f8fafc;
-            --text-dark: #0f172a;
-            --text-light: #64748b;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-bg: #f8fafc;
+            --dark-bg: #0f172a;
             --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            line-height: 1.5;
-            color: var(--text-dark);
-            background-color: var(--background-light);
+            background: var(--light-bg);
+            min-height: 100vh;
+            color: #1e293b;
         }
 
         .navbar {
-            background-color: white;
-            box-shadow: var(--shadow-sm);
-            padding: 1rem 0;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .navbar-brand {
+            color: var(--primary-color) !important;
             font-weight: 700;
-            color: var(--primary-color);
             font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .nav-link {
-            font-weight: 500;
-            color: var(--text-dark);
+        .nav-version {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
+        }
+
+        .github-link {
+            color: var(--secondary-color) !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
             padding: 0.5rem 1rem;
-            transition: color 0.2s ease;
+            border-radius: 8px;
         }
 
-        .nav-link:hover {
-            color: var(--primary-color);
+        .github-link:hover {
+            color: var(--primary-color) !important;
+            background: rgba(37, 99, 235, 0.1);
         }
 
-        .hero {
-            background: linear-gradient(135deg, #2563eb11 0%, #22c55e11 100%);
-            padding: 8rem 0;
-            margin-bottom: 5rem;
-            position: relative;
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .dashboard-title {
+            color: var(--dark-bg);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-subtitle {
+            color: var(--secondary-color);
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
             overflow: hidden;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="%232563eb11"/></svg>');
-            opacity: 0.5;
-            z-index: 0;
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-            max-width: 600px;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .feature-card {
+        .card-header {
             background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
-            height: 100%;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-bg);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+        .card-body {
+            padding: 1.5rem;
         }
 
-        .feature-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            background: var(--background-light);
-            width: 64px;
-            height: 64px;
+        .btn-action {
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.875rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 1rem;
+            gap: 0.5rem;
         }
 
-        .feature-card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-dark);
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .feature-card p {
-            color: var(--text-light);
-            margin-bottom: 0;
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
         }
 
-        .footer {
-            background-color: white;
-            padding: 5rem 0;
-            margin-top: 5rem;
-            border-top: 1px solid var(--border-color);
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
         }
 
-        .footer h5 {
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: var(--text-dark);
-        }
-
-        .footer p, .footer a {
-            color: var(--text-light);
-        }
-
-        .footer a:hover {
+        .demo-note {
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
             color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .footer ul {
-            padding: 0;
-            list-style: none;
-        }
-
-        .footer ul li {
-            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         @media (max-width: 768px) {
-            .hero {
-                padding: 4rem 0;
+            .main-content {
+                padding: 1rem;
             }
 
-            .hero h1 {
-                font-size: 2.5rem;
+            .dashboard-title {
+                font-size: 2rem;
             }
 
-            .hero p {
-                font-size: 1.125rem;
+            .dashboard-subtitle {
+                font-size: 1rem;
+            }
+
+            .card-header {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .btn-action {
+                padding: 0.75rem 1.25rem;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: var(--dark-bg);
+                color: #e2e8f0;
+            }
+
+            .navbar {
+                background: #1e293b;
+            }
+
+            .card {
+                background: #1e293b;
+                border-color: #334155;
+            }
+
+            .card-header {
+                background: #1e293b;
+                border-bottom-color: #334155;
+                color: #e2e8f0;
+            }
+
+            .dashboard-subtitle {
+                color: #94a3b8;
+            }
+
+            .demo-note {
+                background: rgba(37, 99, 235, 0.1);
+                color: #e2e8f0;
             }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">Project Zero</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/legal-dd">Document Analysis</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/e-sign">E-Signature</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                </ul>
-            </div>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="fas fa-file-contract"></i>
+                LegalDoc Pro
+                <span class="nav-version">v1.0.0</span>
+            </span>
+            <a href="https://github.com/sounak1731/internal-project-0" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+                View on GitHub
+            </a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 hero-content">
-                    <h1>Smart Document Analysis & E-Signature Platform</h1>
-                    <p>Transform your document workflow with AI-powered analysis and secure electronic signatures. Experience the future of document management.</p>
-                    <a href="/legal-dd" class="btn btn-primary me-3">Try Document Analysis</a>
-                    <a href="/e-sign" class="btn btn-outline-primary">Start E-Signing</a>
-                </div>
-            </div>
+    <!-- Main Content -->
+    <div class="container main-content">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Professional Document Processing Platform</h1>
+            <p class="dashboard-subtitle">Secure, efficient, and intelligent document processing for modern businesses</p>
         </div>
-    </section>
 
-    <!-- Features Section -->
-    <section id="features" class="container mb-5">
-        <div class="text-center mb-5">
-            <h2 class="display-4 fw-bold mb-3">Key Features</h2>
-            <p class="text-muted">Discover what makes our platform unique</p>
+        <div class="demo-note">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>Demo Mode:</strong> This is a fully functional demo interface. For production deployment, please follow the setup instructions in our <a href="https://github.com/sounak1731/internal-project-0#readme" target="_blank" class="text-decoration-none">documentation</a>.
+            </div>
         </div>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
+
+        <div class="row">
+            <!-- DD Assistant Component -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-robot"></i>
+                        DD Assistant
                     </div>
-                    <h3>AI-Powered Analysis</h3>
-                    <p>Advanced document analysis with risk identification and intelligent suggestions powered by cutting-edge AI technology.</p>
+                    <div class="card-body">
+                        <p class="mb-4">Intelligent document analysis with integrated chat capabilities. Upload documents and get instant insights.</p>
+                        <a href="/dd-assistant.html" class="btn btn-primary btn-action w-100">
+                            <i class="fas fa-arrow-right"></i>
+                            Launch DD Assistant
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
+
+            <!-- E-Sign Component -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
                         <i class="fas fa-signature"></i>
+                        E-Sign
                     </div>
-                    <h3>E-Signatures</h3>
-                    <p>Secure electronic signatures with multi-party support, real-time tracking, and legally binding documentation.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
+                    <div class="card-body">
+                        <p class="mb-4">Secure electronic signatures with advanced document management. Streamline your signing process.</p>
+                        <a href="/e-sign.html" class="btn btn-primary btn-action w-100">
+                            <i class="fas fa-arrow-right"></i>
+                            Launch E-Sign
+                        </a>
                     </div>
-                    <h3>Enterprise Security</h3>
-                    <p>Bank-level security with end-to-end encryption, comprehensive audit trails, and compliance features.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Project Zero</h5>
-                    <p>Making document workflows smarter and more efficient with cutting-edge technology and seamless integration.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul>
-                        <li><a href="/legal-dd">Document Analysis</a></li>
-                        <li><a href="/e-sign">E-Signature</a></li>
-                        <li><a href="#features">Features</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact</h5>
-                    <p>Email: support@projectzero.com</p>
-                    <p>Phone: +1 (555) 123-4567</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

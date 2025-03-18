@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DD Assistant | LegalDoc Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-bg: #f8fafc;
+            --dark-bg: #0f172a;
+            --border-color: #e2e8f0;
+            --chat-bg: #ffffff;
+            --message-bg: #f1f5f9;
+            --assistant-message-bg: #e0e7ff;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            color: var(--primary-color) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-version {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
+        }
+
+        .main-content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-bg);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            background-color: rgba(37, 99, 235, 0.02);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--success-color);
+            background-color: rgba(34, 197, 94, 0.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .chat-input {
+            border-top: 1px solid var(--border-color);
+            padding: 1rem;
+            background: white;
+        }
+
+        .chat-input form {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+        }
+
+        .message-content {
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--message-bg);
+        }
+
+        .user-message {
+            margin-left: auto;
+        }
+
+        .assistant-message {
+            margin-right: auto;
+        }
+
+        .assistant-message .message-content {
+            background: var(--assistant-message-bg);
+        }
+
+        .message-meta {
+            font-size: 0.875rem;
+            color: var(--secondary-color);
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analysis-result {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .analysis-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .analysis-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .analysis-section h5 {
+            color: var(--dark-bg);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .key-finding {
+            background: var(--message-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .risk-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .risk-low {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+        }
+
+        .btn-action {
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .card-header {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .upload-area {
+                padding: 1.5rem;
+            }
+
+            .chat-container {
+                height: 400px;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: var(--dark-bg);
+                color: #e2e8f0;
+            }
+
+            .navbar {
+                background: #1e293b;
+            }
+
+            .card {
+                background: #1e293b;
+                border-color: #334155;
+            }
+
+            .card-header {
+                background: #1e293b;
+                border-bottom-color: #334155;
+                color: #e2e8f0;
+            }
+
+            .chat-container {
+                background: #1e293b;
+                border-color: #334155;
+            }
+
+            .chat-input {
+                background: #1e293b;
+                border-top-color: #334155;
+            }
+
+            .chat-input input {
+                background: #1e293b;
+                border-color: #334155;
+                color: #e2e8f0;
+            }
+
+            .message-content {
+                background: #334155;
+            }
+
+            .assistant-message .message-content {
+                background: #1e40af;
+            }
+
+            .analysis-result {
+                background: #1e293b;
+            }
+
+            .key-finding {
+                background: #334155;
+            }
+
+            .risk-high {
+                background: rgba(239, 68, 68, 0.2);
+            }
+
+            .risk-medium {
+                background: rgba(245, 158, 11, 0.2);
+            }
+
+            .risk-low {
+                background: rgba(34, 197, 94, 0.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-robot"></i>
+                LegalDoc Pro
+                <span class="nav-version">v1.0.0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <div class="row">
+            <!-- Document Upload and Analysis -->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-file-upload"></i>
+                        Upload Document
+                    </div>
+                    <div class="card-body">
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="upload-area" id="dropZone">
+                                <i class="fas fa-file-upload upload-icon"></i>
+                                <h5>Drag & Drop Files Here</h5>
+                                <p class="text-muted">or</p>
+                                <input type="file" id="fileInput" name="document" class="d-none" accept=".pdf,.doc,.docx,.txt">
+                                <button type="button" class="btn btn-primary btn-action" id="browseBtn">
+                                    Select File
+                                </button>
+                                <div class="mt-3 text-muted small">
+                                    Supported formats: PDF, DOC, DOCX, TXT | Max size: 25MB
+                                </div>
+                            </div>
+                        </form>
+                        <div id="uploadResult" class="mt-3"></div>
+                        <div id="analysisResult" class="analysis-result" style="display: none;">
+                            <div class="analysis-section">
+                                <h5><i class="fas fa-chart-bar"></i> Document Analysis</h5>
+                                <div id="documentInfo"></div>
+                            </div>
+                            <div class="analysis-section">
+                                <h5><i class="fas fa-lightbulb"></i> Key Findings</h5>
+                                <div id="keyFindings"></div>
+                            </div>
+                            <div class="analysis-section">
+                                <h5><i class="fas fa-exclamation-triangle"></i> Risk Analysis</h5>
+                                <div id="riskAnalysis"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Assistant -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="fas fa-comments"></i>
+                        Chat Assistant
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="message assistant-message">
+                                    <div class="message-content">
+                                        Hello! I'm your document analysis assistant. Upload a document and I'll help you understand its contents, identify key points, and assess potential risks.
+                                    </div>
+                                    <div class="message-meta">
+                                        <i class="fas fa-robot"></i>
+                                        Assistant
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input">
+                                <form id="chatForm">
+                                    <input type="text" id="messageInput" placeholder="Ask me anything about the document..." disabled>
+                                    <button type="submit" class="btn btn-primary btn-action" disabled>
+                                        <i class="fas fa-paper-plane"></i>
+                                        Send
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentFile = null;
+        let currentDocumentId = null;
+        let documentAnalyzed = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const browseBtn = document.getElementById('browseBtn');
+            const uploadForm = document.getElementById('uploadForm');
+            const uploadResult = document.getElementById('uploadResult');
+            const chatForm = document.getElementById('chatForm');
+            const messageInput = document.getElementById('messageInput');
+            const chatMessages = document.getElementById('chatMessages');
+
+            // Handle file browsing
+            browseBtn.addEventListener('click', () => fileInput.click());
+            
+            // Handle file selection
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Handle drag and drop
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect();
+                }
+            });
+
+            // Handle chat form submission
+            chatForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const message = messageInput.value.trim();
+                if (!message || !currentDocumentId) return;
+
+                // Add user message to chat
+                addMessage(message, 'user');
+                messageInput.value = '';
+
+                try {
+                    // Simulate API call delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // Demo responses based on keywords
+                    let response = '';
+                    if (message.toLowerCase().includes('risk')) {
+                        response = "Based on my analysis, I've identified several potential risks in the document. The main concerns are related to liability clauses and compliance requirements. Would you like me to elaborate on any specific aspect?";
+                    } else if (message.toLowerCase().includes('summary')) {
+                        response = "This document appears to be a legal agreement with standard terms and conditions. Key points include payment terms (Net 30), liability limitations, and confidentiality requirements. The document follows standard legal formatting and includes all necessary sections.";
+                    } else if (message.toLowerCase().includes('recommend')) {
+                        response = "I recommend reviewing the liability clauses in sections 5.2 and 7.3, as they contain important limitations. Additionally, the payment terms could be negotiated to better align with industry standards.";
+                    } else {
+                        response = "I understand you're asking about the document. Could you please be more specific about what aspect you'd like me to analyze? I can help with risk assessment, summarization, or specific clause analysis.";
+                    }
+
+                    // Add assistant response
+                    addMessage(response, 'assistant');
+                } catch (error) {
+                    addMessage('I apologize, but I encountered an error processing your request. Please try again.', 'assistant');
+                }
+            });
+        });
+
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (file) {
+                currentFile = file;
+                uploadResult.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                        Uploading document: ${file.name}
+                    </div>
+                `;
+                simulateFileUpload();
+            }
+        }
+
+        function simulateFileUpload() {
+            // Simulate file upload and analysis
+            setTimeout(() => {
+                currentDocumentId = 'demo-' + Date.now();
+                uploadResult.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Document uploaded successfully!
+                    </div>
+                `;
+                simulateDocumentAnalysis();
+            }, 1500);
+        }
+
+        function simulateDocumentAnalysis() {
+            const analysisResult = document.getElementById('analysisResult');
+            const documentInfo = document.getElementById('documentInfo');
+            const keyFindings = document.getElementById('keyFindings');
+            const riskAnalysis = document.getElementById('riskAnalysis');
+
+            // Show analysis in progress
+            analysisResult.style.display = 'block';
+            documentInfo.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    Analyzing document...
+                </div>
+            `;
+
+            // Simulate analysis delay
+            setTimeout(() => {
+                // Document Info
+                documentInfo.innerHTML = `
+                    <div class="key-finding">
+                        <strong>Document Type:</strong> Legal Agreement<br>
+                        <strong>Pages:</strong> 15<br>
+                        <strong>Last Modified:</strong> ${new Date().toLocaleDateString()}<br>
+                        <strong>Language:</strong> English
+                    </div>
+                `;
+
+                // Key Findings
+                keyFindings.innerHTML = `
+                    <div class="key-finding">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Standard legal agreement structure with all essential sections
+                    </div>
+                    <div class="key-finding">
+                        <i class="fas fa-info-circle text-primary me-2"></i>
+                        Contains specific performance obligations and deadlines
+                    </div>
+                    <div class="key-finding">
+                        <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                        Several non-standard clauses identified
+                    </div>
+                `;
+
+                // Risk Analysis
+                riskAnalysis.innerHTML = `
+                    <div class="risk-item risk-high">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>Broad liability provisions may expose parties to significant risks</div>
+                    </div>
+                    <div class="risk-item risk-medium">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>Payment terms deviate from industry standards</div>
+                    </div>
+                    <div class="risk-item risk-low">
+                        <i class="fas fa-info-circle"></i>
+                        <div>Standard confidentiality provisions present</div>
+                    </div>
+                `;
+
+                // Enable chat
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('chatForm').querySelector('button').disabled = false;
+                documentAnalyzed = true;
+
+                // Add analysis complete message to chat
+                addMessage("I've completed the analysis of your document. Feel free to ask me any questions about its contents, risks, or recommendations.", 'assistant');
+            }, 2000);
+        }
+
+        function addMessage(content, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.innerHTML = `
+                <div class="message-content">${content}</div>
+                <div class="message-meta">
+                    <i class="fas fa-${type === 'user' ? 'user' : 'robot'}"></i>
+                    ${type === 'user' ? 'You' : 'Assistant'}
+                </div>
+            `;
+            
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+</body>
+</html> 

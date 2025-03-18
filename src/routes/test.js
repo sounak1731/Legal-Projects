@@ -37,13 +37,28 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 25 * 1024 * 1024 } // 25MB limit
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
+  fileFilter: (req, file, cb) => {
+    // Accept common document formats
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain'
+    ];
+    
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed.'));
+    }
+  }
 });
 
 // Direct document upload endpoint without authentication
 router.post('/upload-document', upload.single('document'), async (req, res) => {
   try {
-    logger.info('Test document upload accessed');
+    logger.info('Document upload initiated');
     
     if (!req.file) {
       return res.status(400).json({ 
@@ -52,7 +67,6 @@ router.post('/upload-document', upload.single('document'), async (req, res) => {
       });
     }
     
-    // Log file information
     logger.info(`File uploaded: ${req.file.originalname}, Size: ${req.file.size} bytes`);
 
     // Find admin user
@@ -62,7 +76,7 @@ router.post('/upload-document', upload.single('document'), async (req, res) => {
       throw new Error('Admin user not found');
     }
 
-    // Create document record in database
+    // Create document record
     const document = await Document.create({
       id: uuidv4(),
       originalName: req.file.originalname,
@@ -79,7 +93,8 @@ router.post('/upload-document', upload.single('document'), async (req, res) => {
       version: 1
     });
     
-    // Return success response with file information
+    logger.info(`Document record created with ID: ${document.id}`);
+    
     res.json({
       success: true,
       message: 'File uploaded successfully',
@@ -197,10 +212,11 @@ router.post('/compare-documents', upload.array('documents', 2), async (req, res)
 // Analyze document without authentication
 router.post('/analyze-document/:id', async (req, res) => {
   try {
-    logger.info(`Test document analysis accessed for document ID: ${req.params.id}`);
+    const documentId = req.params.id;
+    logger.info(`Document analysis requested for ID: ${documentId}`);
     
-    // Get document by ID
-    const document = await Document.findByPk(req.params.id);
+    // Get document
+    const document = await Document.findByPk(documentId);
     
     if (!document) {
       return res.status(404).json({
@@ -209,91 +225,50 @@ router.post('/analyze-document/:id', async (req, res) => {
       });
     }
 
-    // Create analysis record
-    const analysisId = uuidv4();
-    const analysis = await AnalysisResult.create({
-      id: analysisId,
+    // Simulate document analysis
+    const analysis = {
       documentId: document.id,
-      userId: '00000000-0000-4000-a000-000000000000', // Admin ID
-      status: 'processing',
-      analysisVersion: '1.0'
-    });
+      timestamp: new Date().toISOString(),
+      documentType: document.mimeType,
+      pageCount: Math.floor(Math.random() * 10) + 1,
+      language: 'English',
+      entities: {
+        dates: ['2024-03-15', '2024-04-01'],
+        names: ['John Smith', 'Jane Doe'],
+        organizations: ['ABC Corp', 'XYZ Ltd']
+      },
+      keyPhrases: [
+        'contract agreement',
+        'terms and conditions',
+        'liability clause'
+      ],
+      sentiment: {
+        score: 0.75,
+        label: 'Positive'
+      },
+      riskAnalysis: {
+        score: 0.3,
+        level: 'Low',
+        findings: [
+          'Standard contract language detected',
+          'No unusual terms identified'
+        ]
+      },
+      confidence: 0.95
+    };
 
-    // Simulate analysis process (in a real app, this would be an async job)
-    setTimeout(async () => {
-      try {
-        // Simulate analysis results
-        const analysisResults = {
-          entities: [
-            { type: 'person', name: 'John Smith', occurrences: 5 },
-            { type: 'company', name: 'Acme Corporation', occurrences: 12 },
-            { type: 'date', value: '2023-06-30', occurrences: 3 }
-          ],
-          clauses: [
-            { 
-              type: 'indemnification', 
-              text: 'Party A shall indemnify Party B against all claims...',
-              location: { page: 4, paragraph: 2 }
-            },
-            { 
-              type: 'limitation_of_liability', 
-              text: 'In no event shall either party be liable for any indirect damages...',
-              location: { page: 6, paragraph: 1 }
-            }
-          ],
-          risks: [
-            { 
-              level: 'high', 
-              description: 'Unlimited liability exposure in Section 8.3',
-              recommendation: 'Add liability cap'
-            },
-            { 
-              level: 'medium', 
-              description: 'Vague termination provisions',
-              recommendation: 'Clarify termination conditions'
-            }
-          ],
-          summary: 'This document is a services agreement between Acme Corporation and John Smith, with standard provisions but notable risks in liability and termination clauses.'
-        };
-
-        // Update analysis record with results
-        await analysis.update({
-          status: 'completed',
-          entities: analysisResults.entities,
-          clauses: analysisResults.clauses,
-          risks: analysisResults.risks,
-          summary: analysisResults.summary,
-          processingTime: 2.5, // seconds
-          completedAt: new Date()
-        });
-
-        logger.info(`Analysis completed for document ${document.id}`);
-      } catch (error) {
-        // Update analysis record with error
-        await analysis.update({
-          status: 'failed',
-          error: error.message
-        });
-        logger.error(`Analysis failed for document ${document.id}: ${error.message}`);
-      }
-    }, 3000); // Simulate 3-second processing time
-
-    // Return immediate response
+    logger.info(`Analysis completed for document ID: ${documentId}`);
+    
     res.json({
       success: true,
-      message: 'Document analysis started',
-      analysis: {
-        id: analysis.id,
-        documentId: analysis.documentId,
-        status: analysis.status,
-        createdAt: analysis.createdAt
-      }
+      message: 'Document analyzed successfully',
+      analysis
     });
   } catch (error) {
-    logger.error('Error starting document analysis:', error);
+    logger.error('Error analyzing document:', error);
     res.status(500).json({
       success: false,
-      message: 'Error starting document analysis',
+      message: 'Error analyzing document',
       error: error.message
     });
   }
@@ -342,12 +317,13 @@ router.get('/analysis-results/:id', async (req, res) => {
 });
 
 // Generate report without authentication
-router.post('/generate-report/:documentId', async (req, res) => {
+router.get('/generate-report/:id', async (req, res) => {
   try {
-    logger.info(`Generating report for document ID: ${req.params.documentId}`);
+    const documentId = req.params.id;
+    logger.info(`Report generation requested for document ID: ${documentId}`);
     
-    // Get document by ID
-    const document = await Document.findByPk(req.params.documentId);
+    // Get document
+    const document = await Document.findByPk(documentId);
     
     if (!document) {
       return res.status(404).json({
@@ -356,37 +332,36 @@ router.post('/generate-report/:documentId', async (req, res) => {
       });
     }
 
-    // Get analysis for document (if exists)
-    const analysis = await AnalysisResult.findOne({
-      where: { documentId: document.id, status: 'completed' }
-    });
-
-    // Generate report (simulated)
+    // Simulate report generation
     const report = {
-      id: uuidv4(),
-      title: `Report: ${document.name}`,
+      reportId: `RPT-${Date.now()}`,
+      documentId: document.id,
       generatedAt: new Date().toISOString(),
       documentInfo: {
-        id: document.id,
         name: document.name,
-        fileSize: document.fileSize,
+        size: document.size,
+        type: document.mimeType,
         uploadedAt: document.createdAt
       },
-      content: {
-        executiveSummary: analysis ? analysis.summary : 'No analysis available',
-        keyFindings: analysis ? analysis.risks.map(r => r.description).join('; ') : 'No findings available',
-        recommendations: analysis ? analysis.risks.map(r => r.recommendation).join('; ') : 'No recommendations available',
-        detailedAnalysis: {
-          entities: analysis ? analysis.entities : [],
-          clauses: analysis ? analysis.clauses : [],
-          risks: analysis ? analysis.risks : []
-        }
+      summary: 'Comprehensive document analysis report',
+      findings: {
+        riskLevel: 'Low',
+        compliance: 'Compliant',
+        recommendations: [
+          'Consider adding version control',
+          'Review metadata for completeness',
+          'Update document classification'
+        ]
       },
-      reportFormat: 'PDF',
-      downloadUrl: `/api/test/download-report/${uuidv4()}`
+      metadata: {
+        processedBy: 'LegalDoc Pro Analysis Engine',
+        version: '1.0.0',
+        processingTime: '2.3 seconds'
+      }
     };
 
-    // Return report data
+    logger.info(`Report generated for document ID: ${documentId}`);
+    
     res.json({
       success: true,
       message: 'Report generated successfully',
@@ -403,21 +378,22 @@ router.post('/generate-report/:documentId', async (req, res) => {
 });
 
 // E-signature without authentication
-router.post('/sign-document/:documentId', async (req, res) => {
+router.post('/sign-document/:id', async (req, res) => {
   try {
-    logger.info(`Adding signature to document ID: ${req.params.documentId}`);
+    const documentId = req.params.id;
+    const { signatureType, signerName, signerEmail } = req.body;
     
-    const { signatureType, signatureData, position } = req.body;
+    logger.info(`Document signing requested for ID: ${documentId}`);
     
-    if (!signatureType || !signatureData) {
+    if (!signatureType || !signerName || !signerEmail) {
       return res.status(400).json({
         success: false,
-        message: 'Signature type and data are required'
+        message: 'Missing required signature information'
       });
     }
-    
-    // Get document by ID
-    const document = await Document.findByPk(req.params.documentId);
+
+    // Get document
+    const document = await Document.findByPk(documentId);
     
     if (!document) {
       return res.status(404).json({
@@ -430,42 +406,38 @@ router.post('/sign-document/:documentId', async (req, res) => {
     const signature = await Signature.create({
       id: uuidv4(),
       documentId: document.id,
-      userId: '00000000-0000-4000-a000-000000000000', // Admin ID
-      signatureType: signatureType,
-      signatureData: signatureData,
-      page: position?.page || 1,
-      positionX: position?.x || 100,
-      positionY: position?.y || 100,
-      width: position?.width || 200,
-      height: position?.height || 50,
-      metadata: {},
-      verified: false,
-      createdAt: new Date()
+      signatureType,
+      signerName,
+      signerEmail,
+      status: 'completed',
+      signedAt: new Date(),
+      metadata: {
+        ipAddress: req.ip,
+        userAgent: req.get('user-agent')
+      }
     });
 
-    // Return signature data
+    logger.info(`Document signed successfully, signature ID: ${signature.id}`);
+    
     res.json({
       success: true,
-      message: 'Signature added successfully',
+      message: 'Document signed successfully',
       signature: {
         id: signature.id,
         documentId: signature.documentId,
         signatureType: signature.signatureType,
-        position: {
-          page: signature.page,
-          x: signature.positionX,
-          y: signature.positionY,
-          width: signature.width,
-          height: signature.height
-        },
-        createdAt: signature.createdAt
+        signerName: signature.signerName,
+        signerEmail: signature.signerEmail,
+        status: signature.status,
+        signedAt: signature.signedAt,
+        verificationHash: uuidv4()
       }
     });
   } catch (error) {
-    logger.error('Error adding signature:', error);
+    logger.error('Error signing document:', error);
     res.status(500).json({
       success: false,
-      message: 'Error adding signature',
+      message: 'Error signing document',
       error: error.message
     });
   }
